@@ -1,4 +1,4 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,8 @@ import { Sheet, SheetTrigger, SheetContent} from '@/components/ui/sheet';
 // for avatar ni and icons sa sidebar, still reusing component via avatar
 import { Avatar, AvatarFallback} from '@/components/ui/avatar';
 import { Heart, CalendarDays, MessageCircle, Package, ClipboardList, UserRound, Settings, LogOut} from 'lucide-react';
+// for modals, reused compoent
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger} from '@/components/ui/alert-dialog';
 type Listing = {
     id: number;
     name: string;
@@ -55,14 +57,17 @@ function SidebarItem({
     icon,
     label,
     className,
+    onClick,
 }: {
     icon: React.ReactNode;
     label: string;
     className?: string;
+    onClick?: () => void;
 }) {
     return (
         <button
             type="button"
+            onClick={onClick}
             className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground ${className ?? ''}`}>
             <span className="size-5 [&>svg]:size-5">
                 {icon}
@@ -159,18 +164,46 @@ export default function Browse() {
                                             <p className="px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                                                 Account
                                             </p>
-
                                             <SidebarItem icon={<UserRound />} label="My Profile" />
                                             <SidebarItem icon={<Settings />} label="Settings" />
                                         </div>
                                     </div>
 
                                     <div className="border-t px-4 py-4">
-                                        <SidebarItem
-                                            icon={<LogOut />}
-                                            label="Log out"
-                                            className="text-destructive hover:bg-destructive/10"
-                                        />
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <button
+                                                    type="button"
+                                                    className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10">
+                                                    <span className="size-5 [&>svg]:size-5">
+                                                        <LogOut />
+                                                    </span>
+                                                    Log out
+                                                </button>
+                                            </AlertDialogTrigger>
+
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>
+                                                        Confirm logout
+                                                    </AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        Are you sure you want to log out of your account?
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>
+                                                        Cancel
+                                                    </AlertDialogCancel>
+                                                    <AlertDialogAction
+                                                        className="bg-destructive text-white hover:bg-destructive/90"
+                                                        onClick={() => router.post('/logout')}>
+                                                        Confirm Log Out
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
                                     </div>
                                 </SheetContent>
                             </Sheet>
