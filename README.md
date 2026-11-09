@@ -17,12 +17,12 @@ LetMeSee is a web-based camera rental marketplace designed to connect camera equ
 
 Install the following on your development machine:
 
-1. **Git** 
+1. **Git**
 2. **PHP** - please make sure that the version is compatible with the project's Composer requirements.
-3. **Composer** 
-4. **Node.js and npm** 
-5. **MySQL** 
-6. **Laragon (recommended for Windows)** 
+3. **Composer**
+4. **Node.js and npm**
+5. **MySQL**
+6. **Laragon (recommended for Windows)**
 
 ### 1. Clone the repository
 

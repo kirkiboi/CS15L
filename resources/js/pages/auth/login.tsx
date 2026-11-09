@@ -20,9 +20,7 @@ export default function Login({ status, canResetPassword }: Props) {
     return (
         <>
             <div className="mb-8 flex flex-col items-center text-center">
-                <h1 className="text-3xl font-bold tracking-tight">
-                    LetMeSee
-                </h1>
+                <h1 className="text-3xl font-bold tracking-tight">LetMeSee</h1>
                 <p className="mt-2 text-sm text-muted-foreground">
                     Making sure moments are captured and shared with the world.
                 </p>
@@ -31,22 +29,20 @@ export default function Login({ status, canResetPassword }: Props) {
             <Form
                 {...store.form()}
                 resetOnSuccess={['password']}
-                className="flex flex-col gap-6">
+                className="flex flex-col gap-6"
+            >
                 {({ processing, errors }) => (
                     <>
                         <div className="mb-1">
                             <h2 className="text-xl font-semibold">
                                 Log in to continue to your account.
                             </h2>
-                            <p className="mt-1 text-sm text-muted-foreground">
-                            </p>
+                            <p className="mt-1 text-sm text-muted-foreground"></p>
                         </div>
 
                         <div className="grid gap-5">
                             <div className="grid gap-2">
-                                <Label htmlFor="email">
-                                    Email address
-                                </Label>
+                                <Label htmlFor="email">Email address</Label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -61,14 +57,13 @@ export default function Login({ status, canResetPassword }: Props) {
 
                             <div className="grid gap-2">
                                 <div className="flex items-center justify-between gap-2">
-                                    <Label htmlFor="password">
-                                        Password
-                                    </Label>
+                                    <Label htmlFor="password">Password</Label>
 
                                     {canResetPassword && (
                                         <TextLink
                                             href={request()}
-                                            className="text-sm">
+                                            className="text-sm"
+                                        >
                                             Forgot password?
                                         </TextLink>
                                     )}
@@ -85,13 +80,11 @@ export default function Login({ status, canResetPassword }: Props) {
                             </div>
 
                             <div className="flex items-center gap-3">
-                                <Checkbox
-                                    id="remember"
-                                    name="remember"
-                                />
+                                <Checkbox id="remember" name="remember" />
                                 <Label
                                     htmlFor="remember"
-                                    className="font-normal">
+                                    className="font-normal"
+                                >
                                     Remember me
                                 </Label>
                             </div>
@@ -100,7 +93,8 @@ export default function Login({ status, canResetPassword }: Props) {
                                 type="submit"
                                 className="mt-1 w-full"
                                 disabled={processing}
-                                data-test="login-button">
+                                data-test="login-button"
+                            >
                                 {processing && <Spinner />}
                                 {processing ? 'Logging in...' : 'Log in'}
                             </Button>
