@@ -12,6 +12,12 @@ type Listing = {
     location: string;
     category: string;
 };
+// for the sidebar ni sya, reusing component via sheet
+import {
+    Sheet,
+    SheetTrigger,
+    SheetContent,
+} from '@/components/ui/sheet';
 
 const SAMPLE_LISTINGS: Listing[] = [
     { id: 1, name: 'Sony A7 IV', price: 800, location: 'Makati, Metro Manila', category: 'Mirrorless' },
@@ -49,6 +55,7 @@ function ListingCard({ listing }: { listing: Listing }) {
 
 export default function Browse() {
     const { auth } = usePage<{ auth: { user: { name: string } | null } }>().props;
+    const initials = auth.user?.name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase() ?? '';
     const [search, setSearch] = useState('');
     const [location, setLocation] = useState('');
     const filtered = SAMPLE_LISTINGS.filter((l) => {
@@ -59,7 +66,7 @@ export default function Browse() {
 
     return (
         <>
-            <Head title="Browse Cameras" />
+            <Head/>
             <header className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur">
                 <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
                     {/* tangan nato nig logo diri puhon */}
@@ -67,15 +74,30 @@ export default function Browse() {
                         LetMeSee
                     </span>
 
-                    <nav className="flex items-center gap-2">
+                    <nav className="flex items-center gap-3">
                         {auth.user ? (
-                            <span className="text-sm text-muted-foreground">
-                                Hello, {auth.user.name}
-                            </span>
+                            <Sheet>
+                                <SheetTrigger asChild>
+                                    <button
+                                        type="button"
+                                        className="flex items-center gap-3 rounded-full hover:cursor-pointer opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                                        <div className="flex size-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+                                            {initials}
+                                        </div>
+                                        <span className="text-sm font-medium text-foreground">
+                                            {auth.user.name}
+                                        </span>
+                                    </button>
+                                </SheetTrigger>
+
+                                <SheetContent side="right">
+                                   
+                                </SheetContent>
+                            </Sheet>
                         ) : (
                             <Link href={login().url}>
                                 <Button
-                                    className='hover:cursor-pointer'
+                                    className="hover:cursor-pointer"
                                     size="sm">
                                     Log in
                                 </Button>
