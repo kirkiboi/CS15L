@@ -4,7 +4,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { login } from '@/routes';
 import { Search, MapPin, Camera } from 'lucide-react';
-
+// for the sidebar ni sya, reusing component via sheet
+import { Sheet, SheetTrigger, SheetContent} from '@/components/ui/sheet';
+// for avatar ni and icons sa sidebar, still reusing component via avatar
+import { Avatar, AvatarFallback} from '@/components/ui/avatar';
+import { Heart, CalendarDays, MessageCircle, Package, ClipboardList, UserRound, Settings, LogOut} from 'lucide-react';
 type Listing = {
     id: number;
     name: string;
@@ -12,12 +16,6 @@ type Listing = {
     location: string;
     category: string;
 };
-// for the sidebar ni sya, reusing component via sheet
-import {
-    Sheet,
-    SheetTrigger,
-    SheetContent,
-} from '@/components/ui/sheet';
 
 const SAMPLE_LISTINGS: Listing[] = [
     { id: 1, name: 'Sony A7 IV', price: 800, location: 'Makati, Metro Manila', category: 'Mirrorless' },
@@ -52,6 +50,27 @@ function ListingCard({ listing }: { listing: Listing }) {
         </div>
     );
 }
+// sidebar component ni for reusable
+function SidebarItem({
+    icon,
+    label,
+    className,
+}: {
+    icon: React.ReactNode;
+    label: string;
+    className?: string;
+}) {
+    return (
+        <button
+            type="button"
+            className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground ${className ?? ''}`}>
+            <span className="size-5 [&>svg]:size-5">
+                {icon}
+            </span>
+            {label}
+        </button>
+    );
+}
 
 export default function Browse() {
     const { auth } = usePage<{ auth: { user: { name: string } | null } }>().props;
@@ -80,25 +99,84 @@ export default function Browse() {
                                 <SheetTrigger asChild>
                                     <button
                                         type="button"
-                                        className="flex items-center gap-3 rounded-full hover:cursor-pointer opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                                        <div className="flex size-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                                            {initials}
-                                        </div>
+                                        className="flex items-center gap-3 rounded-full transition-opacity hover:cursor-pointer opacity-80">
+                                        <Avatar className="size-9">
+                                            <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+                                                {initials}
+                                            </AvatarFallback>
+                                        </Avatar>
+
                                         <span className="text-sm font-medium text-foreground">
                                             {auth.user.name}
                                         </span>
                                     </button>
                                 </SheetTrigger>
 
-                                <SheetContent side="right">
-                                   
+                                <SheetContent side="right" className="flex flex-col">
+                                    <div className="flex items-center gap-3 border-b px-6 pb-6 pt-8">
+                                        <Avatar className="size-12">
+                                            <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+                                                {initials}
+                                            </AvatarFallback>
+                                        </Avatar>
+
+                                        <div className="min-w-0">
+                                            <p className="font-semibold text-foreground">
+                                                {auth.user.name}
+                                            </p>
+                                            <p className="truncate text-sm text-muted-foreground">
+                                                {auth.user.email}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex-1 space-y-6 overflow-y-auto px-4 py-6">
+                                        <div className="space-y-2">
+                                            <p className="px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                                Discover
+                                            </p>
+                                            <SidebarItem icon={<Camera />} label="Browse Cameras" />
+                                            <SidebarItem icon={<Heart />} label="Favorites" />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <p className="px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                                Renting
+                                            </p>
+                                            <SidebarItem icon={<CalendarDays />} label="My Rentals" />
+                                            <SidebarItem icon={<MessageCircle />} label="Messages" />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <p className="px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                                My Equipment
+                                            </p>
+                                            <SidebarItem icon={<Package />} label="My Listings" />
+                                            <SidebarItem icon={<ClipboardList />} label="Rental Requests" />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <p className="px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                                Account
+                                            </p>
+
+                                            <SidebarItem icon={<UserRound />} label="My Profile" />
+                                            <SidebarItem icon={<Settings />} label="Settings" />
+                                        </div>
+                                    </div>
+
+                                    <div className="border-t px-4 py-4">
+                                        <SidebarItem
+                                            icon={<LogOut />}
+                                            label="Log out"
+                                            className="text-destructive hover:bg-destructive/10"
+                                        />
+                                    </div>
                                 </SheetContent>
                             </Sheet>
                         ) : (
                             <Link href={login().url}>
-                                <Button
-                                    className="hover:cursor-pointer"
-                                    size="sm">
+                                <Button size="sm">
                                     Log in
                                 </Button>
                             </Link>
