@@ -4,6 +4,9 @@ use App\Http\Controllers\Auth\EmailVerificationCodeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::get('/verify-code', [EmailVerificationCodeController::class, 'create'])->name('verification.code');
+Route::post('/verify-code', [EmailVerificationCodeController::class, 'store'])->name('verification.code.store');
+
 Route::inertia('/', 'browse')->name('home');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
