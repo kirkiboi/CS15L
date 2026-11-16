@@ -24,8 +24,7 @@ class EmailVerificationCode extends Notification
         return (new MailMessage)
             ->subject('Your LetMeSee verification code')
             ->greeting('Welcome to LetMeSee!')
-            ->line('Thank you for creating your account.')
-            ->line('Use the verification code below to verify your email address:')
+            ->line('Thank you for creating your account. Kindly use the verification code below to verify your email address:')
             ->line($this->code)
             ->line('This code will expire in 10 minutes.')
             ->line('If you did not create this account, you can ignore this email.');
