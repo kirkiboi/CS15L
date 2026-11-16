@@ -314,7 +314,9 @@ export default function Browse() {
                             </Sheet>
                         ) : (
                             <Link href={login().url}>
-                                <Button size="sm">Log in</Button>
+                                <Button
+                                    className="hover:cursor-pointer"
+                                    size="sm">Log In</Button>
                             </Link>
                         )}
                     </nav>
