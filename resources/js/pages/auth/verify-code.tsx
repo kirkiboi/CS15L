@@ -12,7 +12,7 @@ type Props = {
     status?: string;
 };
 
-export default function VerifyCode({ email, status }: Props) {
+export default function VerifyCode({ status }: Props) {
     return (
         <>
             <Head />
@@ -37,9 +37,7 @@ export default function VerifyCode({ email, status }: Props) {
                     {({ processing, errors }) => (
                         <>
                             <div className="grid gap-2">
-                                <Label htmlFor="code">
-                                    Verification code
-                                </Label>
+                                <Label htmlFor="code">Verification code</Label>
 
                                 <Input
                                     id="code"
@@ -98,10 +96,7 @@ export default function VerifyCode({ email, status }: Props) {
                 </div>
 
                 <p className="text-center text-sm text-muted-foreground">
-                    Already verified?{' '}
-                    <TextLink href={login()}>
-                        Log in
-                    </TextLink>
+                    Already verified? <TextLink href={login()}>Log in</TextLink>
                 </p>
             </div>
         </>

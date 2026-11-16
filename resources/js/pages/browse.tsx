@@ -316,7 +316,10 @@ export default function Browse() {
                             <Link href={login().url}>
                                 <Button
                                     className="hover:cursor-pointer"
-                                    size="sm">Log In</Button>
+                                    size="sm"
+                                >
+                                    Log In
+                                </Button>
                             </Link>
                         )}
                     </nav>
