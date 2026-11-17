@@ -81,7 +81,8 @@ function ListingCard({ listing }: { listing: Listing }) {
                 <p className="pt-1 text-base font-bold text-foreground">
                     ₱{Number(listing.price_per_day).toLocaleString('en-PH')}
                     <span className="text-sm font-normal text-muted-foreground">
-                        {' '}/ day
+                        {' '}
+                        / day
                     </span>
                 </p>
             </div>

@@ -1,7 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
-import { Plus, Camera } from 'lucide-react';
+import { Plus, Camera, Pencil } from 'lucide-react';
 
 type ListingImage = {
     id: number;
@@ -112,6 +112,20 @@ export default function MyListings({ listings }: Props) {
                                                 / day
                                             </span>
                                         </p>
+
+                                        <div className="flex items-center justify-end border-t border-border pt-2">
+                                            <Button
+                                                asChild
+                                                variant="outline"
+                                                size="sm"
+                                                className="w-full hover:cursor-pointer">
+                                                <Link
+                                                    href={`/my-listings/${listing.id}/edit`}>
+                                                    <Pencil className="mr-1.5 size-3.5" />
+                                                    Edit
+                                                </Link>
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                             ))}

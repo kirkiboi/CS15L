@@ -36,7 +36,9 @@ type Props = {
 
 export default function ListingShow({ listing }: Props) {
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-    const formattedPrice = Number(listing.price_per_day).toLocaleString('en-PH',);
+    const formattedPrice = Number(listing.price_per_day).toLocaleString(
+        'en-PH',
+    );
     const isAvailable = listing.status === 'available';
 
     return (
@@ -96,8 +98,7 @@ export default function ListingShow({ listing }: Props) {
                                             onClick={() =>
                                                 setSelectedImageIndex(index)
                                             }
-                                            className={`relative size-20 shrink-0 overflow-hidden rounded-lg border-2 transition-all hover:opacity-90 ${selectedImageIndex === index ? 'border-primary ring-2 ring-primary/20' : 'border-border'
-                                                }`}>
+                                            className={`relative size-20 shrink-0 overflow-hidden rounded-lg border-2 transition-all hover:opacity-90 ${selectedImageIndex === index ? 'border-primary ring-2 ring-primary/20' : 'border-border'}`}>
                                             <img
                                                 src={`/storage/${img.image_path}`}
                                                 alt={`${listing.title} thumbnail ${index + 1}`}
@@ -129,14 +130,9 @@ export default function ListingShow({ listing }: Props) {
                                     {listing.category}
                                 </Badge>
                                 <Badge
-                                    variant={
-                                        isAvailable ? 'default' : 'secondary'
-                                    }
-                                    className={isAvailable ? 'bg-emerald-600 text-white hover:bg-emerald-600' : ''
-                                    }>
-                                    {isAvailable
-                                        ? 'Available for Rent'
-                                        : 'Unavailable'}
+                                    variant={isAvailable ? 'default' : 'secondary'}
+                                    className={isAvailable ? 'bg-emerald-600 text-white hover:bg-emerald-600' : ''}>
+                                    {isAvailable ? 'Available for Rent' : 'Unavailable'}
                                 </Badge>
                             </div>
 
