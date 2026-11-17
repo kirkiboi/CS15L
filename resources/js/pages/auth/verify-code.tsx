@@ -33,7 +33,8 @@ export default function VerifyCode({ status }: Props) {
                     action="/verify-code"
                     method="post"
                     className="flex flex-col gap-6"
-                    disableWhileProcessing>
+                    disableWhileProcessing
+                >
                     {({ processing, errors }) => (
                         <>
                             <div className="grid gap-2">
@@ -58,7 +59,8 @@ export default function VerifyCode({ status }: Props) {
                             <Button
                                 type="submit"
                                 className="w-full hover:cursor-pointer"
-                                disabled={processing}>
+                                disabled={processing}
+                            >
                                 {processing && <Spinner />}
                                 Verify email
                             </Button>
@@ -74,14 +76,16 @@ export default function VerifyCode({ status }: Props) {
                     <Form
                         action="/verify-code/resend"
                         method="post"
-                        disableWhileProcessing>
+                        disableWhileProcessing
+                    >
                         {({ processing, errors }) => (
                             <>
                                 <Button
                                     type="submit"
                                     variant="secondary"
                                     className="w-full hover:cursor-pointer"
-                                    disabled={processing}>
+                                    disabled={processing}
+                                >
                                     {processing && <Spinner />}
                                     Resend verification code
                                 </Button>
