@@ -56,40 +56,63 @@ class ListingController extends Controller
             'listing' => $listing,
         ]);
     }
+    
+public function update(Request $request, Listing $listing): RedirectResponse{
+    abort_unless($listing->user_id === $request->user()->id, 403);
 
-    public function update(Request $request, Listing $listing): RedirectResponse
-    {
-        abort_unless($listing->user_id === $request->user()->id, 403);
+    $validated = $request->validate([
+        'title'               => ['required', 'string', 'max:255'],
+        'brand'               => ['required', 'string', 'max:100'],
+        'model'               => ['required', 'string', 'max:100'],
+        'category'            => ['required', 'string', 'max:100'],
+        'description'         => ['required', 'string', 'max:5000'],
+        'condition'           => ['required', 'string', 'in:mint,excellent,good,fair,poor'],
+        'price_per_day'       => ['required', 'numeric', 'gt:0', 'max:999999.99'],
+        'status'              => ['required', 'string', 'in:available,unavailable'],
+        'images'              => ['nullable', 'array', 'max:10'],
+        'images.*'            => ['image', 'max:5120'],
+        'removed_image_ids'   => ['nullable', 'array'],
+        'removed_image_ids.*' => ['integer'],
+    ]);
 
-        $validated = $request->validate([
-            'title'               => ['required', 'string', 'max:255'],
-            'brand'               => ['required', 'string', 'max:100'],
-            'model'               => ['required', 'string', 'max:100'],
-            'category'            => ['required', 'string', 'max:100'],
-            'description'         => ['required', 'string', 'max:5000'],
-            'condition'           => ['required', 'string', 'in:mint,excellent,good,fair,poor'],
-            'price_per_day'       => ['required', 'numeric', 'gt:0', 'max:999999.99'],
-            'status'              => ['required', 'string', 'in:available,unavailable'],
-            'images'              => ['nullable', 'array', 'max:10'],
-            'images.*'            => ['image', 'max:5120'], // 5 MB per image
-            'removed_image_ids'   => ['nullable', 'array'],
-            'removed_image_ids.*' => ['integer'],
+    $removedImageIds = $validated['removed_image_ids'] ?? [];
+    $newImages = $request->file('images') ?? [];
+    dd([
+    'existing_images' => $listing->images()->count(),
+    'uploaded_images' => count($newImages),
+    'removed_image_ids' => $removedImageIds,
+    ]);
+    $currentImagesCount = $listing->images()->count();
+    $removedCount = $listing->images()->whereIn('id', $removedImageIds)->count();
+    $keptCount = $currentImagesCount - $removedCount;
+
+    if ($keptCount + count($newImages) > 10) {
+        throw \Illuminate\Validation\ValidationException::withMessages([
+            'images' => 'The total number of images cannot exceed 10.',
         ]);
+    }
 
-        $removedImageIds = $validated['removed_image_ids'] ?? [];
-        $newImages = $request->file('images') ?? [];
-        $newImagesCount = is_array($newImages) ? count($newImages) : 0;
-        $currentImagesCount = $listing->images()->count();
-        $removedCount = !empty($removedImageIds)? $listing->images()->whereIn('id', $removedImageIds)->count(): 0;
-        $keptCount = $currentImagesCount - $removedCount;
+    $newImagePaths = [];
+    $imagesToDelete = [];
 
-        if ($keptCount + $newImagesCount > 10) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
-                'images' => 'The total number of images cannot exceed 10.',
-            ]);
+    try {
+        foreach ($newImages as $image) {
+            $path = $image->store('listings', 'public');
+
+            if (!$path) {
+                throw new \RuntimeException('Unable to store an uploaded image.');
+            }
+
+            $newImagePaths[] = $path;
         }
 
-        DB::transaction(function () use ($validated, $request, $listing, $removedImageIds) {
+        DB::transaction(function () use (
+            $validated,
+            $listing,
+            $removedImageIds,
+            $newImagePaths,
+            &$imagesToDelete
+        ) {
             $listing->update([
                 'title'         => $validated['title'],
                 'brand'         => $validated['brand'],
@@ -102,26 +125,39 @@ class ListingController extends Controller
             ]);
 
             if (!empty($removedImageIds)) {
-                $imagesToDelete = $listing->images()->whereIn('id', $removedImageIds)->get();
+                $imagesToDelete = $listing->images()
+                    ->whereIn('id', $removedImageIds)
+                    ->get();
+
                 foreach ($imagesToDelete as $image) {
-                    Storage::disk('public')->delete($image->image_path);
                     $image->delete();
                 }
             }
 
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
-                    $path = $image->store('listings', 'public');
-                    ListingImage::create([
-                        'listing_id' => $listing->id,
-                        'image_path' => $path,
-                    ]);
-                }
+            foreach ($newImagePaths as $path) {
+                ListingImage::create([
+                    'listing_id' => $listing->id,
+                    'image_path' => $path,
+                ]);
             }
         });
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Listing updated successfully!']);
-        return to_route('listings.index');
+    } catch (\Throwable $exception) {
+        Storage::disk('public')->delete($newImagePaths);
+
+        throw $exception;
     }
+
+    foreach ($imagesToDelete as $image) {
+        Storage::disk('public')->delete($image->image_path);
+    }
+
+    Inertia::flash('toast', [
+        'type' => 'success',
+        'message' => 'Listing updated successfully!',
+    ]);
+
+    return to_route('listings.index');
+}
     public function create(): Response
     {
         return Inertia::render('listings/create');
