@@ -1,4 +1,3 @@
-
 import { Head, Link } from '@inertiajs/react';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
@@ -58,8 +57,8 @@ export default function MyListings({ listings }: Props) {
                             </h3>
 
                             <p className="mt-2 max-w-md text-sm text-muted-foreground">
-                                Start earning by listing your camera or equipment
-                                for rent.
+                                Start earning by listing your camera or
+                                equipment for rent.
                             </p>
 
                             <Button asChild className="mt-6">
@@ -74,7 +73,8 @@ export default function MyListings({ listings }: Props) {
                             {listings.map((listing) => (
                                 <div
                                     key={listing.id}
-                                    className="overflow-hidden rounded-xl border bg-card">
+                                    className="overflow-hidden rounded-xl border bg-card"
+                                >
                                     {listing.images.length > 0 ? (
                                         <img
                                             src={`/storage/${listing.images[0].image_path}`}
@@ -103,9 +103,13 @@ export default function MyListings({ listings }: Props) {
                                         </p>
 
                                         <p className="font-semibold">
-                                            ₱{Number(listing.price_per_day).toLocaleString('en-PH')}
+                                            ₱
+                                            {Number(
+                                                listing.price_per_day,
+                                            ).toLocaleString('en-PH')}
                                             <span className="font-normal text-muted-foreground">
-                                                {' '}/ day
+                                                {' '}
+                                                / day
                                             </span>
                                         </p>
                                     </div>

@@ -199,14 +199,14 @@ git switch -c type/short-description
 
 Use these branch naming conventions:
 
-| Prefix | Purpose | Example |
-|---|---|---|
-| `feat/` | New features | `feat/email-otp` |
-| `fix/` | Bug fixes | `fix/login-validation` |
-| `style/` | Styling and UI changes | `style/navbar-layout` |
-| `docs/` | Documentation changes | `docs/update-readme` |
-| `refactor/` | Code improvements | `refactor/user-controller` |
-| `chore/` | Maintenance and configuration | `chore/update-dependencies` |
+| Prefix      | Purpose                       | Example                     |
+| ----------- | ----------------------------- | --------------------------- |
+| `feat/`     | New features                  | `feat/email-otp`            |
+| `fix/`      | Bug fixes                     | `fix/login-validation`      |
+| `style/`    | Styling and UI changes        | `style/navbar-layout`       |
+| `docs/`     | Documentation changes         | `docs/update-readme`        |
+| `refactor/` | Code improvements             | `refactor/user-controller`  |
+| `chore/`    | Maintenance and configuration | `chore/update-dependencies` |
 
 ### 3. Make and test your changes
 

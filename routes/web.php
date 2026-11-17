@@ -10,7 +10,9 @@ Route::get('/verify-code', [EmailVerificationCodeController::class, 'create'])->
 Route::post('/verify-code', [EmailVerificationCodeController::class, 'store'])->name('verification.code.store');
 Route::post('/verify-code/resend', [EmailVerificationCodeController::class,'resend',])->name('verification.code.resend');
 
-Route::inertia('/', 'browse')->name('home');
+Route::get('/', [ListingController::class, 'browse'])->name('home');
+Route::get('listings/{listing}', [ListingController::class, 'show'])->whereNumber('listing')->name('listings.show');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
     Route::get('my-listings/create', [ListingController::class, 'create'])->name('listings.create');

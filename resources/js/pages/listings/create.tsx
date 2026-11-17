@@ -6,7 +6,13 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { ImagePlus, X } from 'lucide-react';
 
@@ -22,13 +28,7 @@ type FormData = {
     images: File[];
 };
 
-const CATEGORIES = [
-    'DSLR',
-    'Drone',
-    'Lens',
-    'Lighting',
-    'Accessory',
-];
+const CATEGORIES = ['DSLR', 'Drone', 'Lens', 'Lighting', 'Accessory'];
 
 const CONDITIONS = [
     { value: 'mint', label: 'Mint' },
@@ -105,7 +105,8 @@ export default function CreateListing() {
                 <form
                     onSubmit={submit}
                     encType="multipart/form-data"
-                    className="mt-6 space-y-6">
+                    className="mt-6 space-y-6"
+                >
                     <div className="grid gap-2">
                         <Label htmlFor="title">Listing Title</Label>
                         <Input
@@ -155,16 +156,21 @@ export default function CreateListing() {
                         <Label htmlFor="category">Category</Label>
                         <Select
                             value={data.category}
-                            onValueChange={(v) => setData('category', v)}>
-                            <SelectTrigger id="category"
-                                className="hover:cursor-pointer">
+                            onValueChange={(v) => setData('category', v)}
+                        >
+                            <SelectTrigger
+                                id="category"
+                                className="hover:cursor-pointer"
+                            >
                                 <SelectValue placeholder="Select a category" />
                             </SelectTrigger>
                             <SelectContent>
                                 {CATEGORIES.map((c) => (
-                                    <SelectItem key={c}
+                                    <SelectItem
+                                        key={c}
                                         value={c}
-                                        className="hover:cursor-pointer">
+                                        className="hover:cursor-pointer"
+                                    >
                                         {c}
                                     </SelectItem>
                                 ))}
@@ -195,9 +201,12 @@ export default function CreateListing() {
                             <Label htmlFor="condition">Condition</Label>
                             <Select
                                 value={data.condition}
-                                onValueChange={(v) => setData('condition', v)}>
-                                <SelectTrigger id="condition"
-                                    className="hover:cursor-pointer">
+                                onValueChange={(v) => setData('condition', v)}
+                            >
+                                <SelectTrigger
+                                    id="condition"
+                                    className="hover:cursor-pointer"
+                                >
                                     <SelectValue placeholder="Select condition" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -205,7 +214,8 @@ export default function CreateListing() {
                                         <SelectItem
                                             key={c.value}
                                             value={c.value}
-                                            className="cursor-pointer">
+                                            className="cursor-pointer"
+                                        >
                                             {c.label}
                                         </SelectItem>
                                     ))}
@@ -218,15 +228,25 @@ export default function CreateListing() {
                             <Label htmlFor="status">Availability</Label>
                             <Select
                                 value={data.status}
-                                onValueChange={(v) => setData('status', v)}>
-                                <SelectTrigger id="status" className="cursor-pointer">
+                                onValueChange={(v) => setData('status', v)}
+                            >
+                                <SelectTrigger
+                                    id="status"
+                                    className="cursor-pointer"
+                                >
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="available" className="cursor-pointer">
+                                    <SelectItem
+                                        value="available"
+                                        className="cursor-pointer"
+                                    >
                                         Available
                                     </SelectItem>
-                                    <SelectItem value="unavailable" className="cursor-pointer">
+                                    <SelectItem
+                                        value="unavailable"
+                                        className="cursor-pointer"
+                                    >
                                         Unavailable
                                     </SelectItem>
                                 </SelectContent>
@@ -251,7 +271,7 @@ export default function CreateListing() {
                             }
                             placeholder="e.g. 1500"
                             required
-                            className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                         />
                         <InputError message={errors.price_per_day} />
                     </div>
@@ -261,7 +281,8 @@ export default function CreateListing() {
                         <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
-                            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-input px-4 py-6 text-sm text-muted-foreground transition-colors hover:bg-accent">
+                            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-input px-4 py-6 text-sm text-muted-foreground transition-colors hover:bg-accent"
+                        >
                             <ImagePlus className="size-5" />
                             Click to add photos
                         </button>
@@ -280,7 +301,8 @@ export default function CreateListing() {
                                 {previews.map((p, i) => (
                                     <div
                                         key={i}
-                                        className="relative aspect-square overflow-hidden rounded-md border border-border">
+                                        className="relative aspect-square overflow-hidden rounded-md border border-border"
+                                    >
                                         <img
                                             src={p.url}
                                             alt={p.name}
@@ -289,8 +311,9 @@ export default function CreateListing() {
                                         <button
                                             type="button"
                                             onClick={() => removeImage(i)}
-                                            className="absolute top-1 right-1 rounded-full bg-black/60 p-0.5 text-white hover:bg-black/80 hover:cursor-pointer"
-                                            aria-label="Remove image">
+                                            className="absolute top-1 right-1 rounded-full bg-black/60 p-0.5 text-white hover:cursor-pointer hover:bg-black/80"
+                                            aria-label="Remove image"
+                                        >
                                             <X className="size-3.5" />
                                         </button>
                                     </div>
@@ -304,15 +327,15 @@ export default function CreateListing() {
                             type="button"
                             variant="outline"
                             asChild
-                            className="min-w-32 hover:cursor-pointer">
-                            <Link href="/my-listings">
-                                Cancel
-                            </Link>
+                            className="min-w-32 hover:cursor-pointer"
+                        >
+                            <Link href="/my-listings">Cancel</Link>
                         </Button>
                         <Button
                             type="submit"
                             disabled={processing}
-                            className="min-w-32 hover:cursor-pointer">
+                            className="min-w-32 hover:cursor-pointer"
+                        >
                             {processing && <Spinner />}
                             {processing ? 'Saving…' : 'Create Listing'}
                         </Button>

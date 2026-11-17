@@ -13,6 +13,18 @@ use Inertia\Response;
 
 class ListingController extends Controller
 {
+    public function browse(): Response
+{
+    $listings = Listing::query()
+        ->where('status', 'available')
+        ->with('images')
+        ->latest()
+        ->get();
+
+    return Inertia::render('browse', [
+        'listings' => $listings,
+    ]);
+}
     public function index(Request $request): Response{
         $listings = Listing::query()
             ->where('user_id', $request->user()->id)
@@ -22,6 +34,15 @@ class ListingController extends Controller
 
         return Inertia::render('listings/index', [
             'listings' => $listings,
+        ]);
+    }
+
+    public function show(Listing $listing): Response
+    {
+        $listing->load(['images', 'user']);
+
+        return Inertia::render('listings/show', [
+            'listing' => $listing,
         ]);
     }
     public function create(): Response

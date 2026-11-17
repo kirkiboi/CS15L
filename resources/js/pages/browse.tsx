@@ -30,82 +30,58 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-type Listing = {
+type ListingImage = {
     id: number;
-    name: string;
-    price: number;
-    location: string;
-    category: string;
+    image_path: string;
 };
 
-const SAMPLE_LISTINGS: Listing[] = [
-    {
-        id: 1,
-        name: 'Sony A7 IV',
-        price: 800,
-        location: 'Makati, Metro Manila',
-        category: 'Mirrorless',
-    },
-    {
-        id: 2,
-        name: 'Canon EOS R5',
-        price: 1200,
-        location: 'Quezon City, Metro Manila',
-        category: 'Mirrorless',
-    },
-    {
-        id: 3,
-        name: 'Nikon Z6 II',
-        price: 750,
-        location: 'Pasig, Metro Manila',
-        category: 'Mirrorless',
-    },
-    {
-        id: 4,
-        name: 'Fujifilm X-T5',
-        price: 650,
-        location: 'Taguig, Metro Manila',
-        category: 'Mirrorless',
-    },
-    {
-        id: 5,
-        name: 'DJI Ronin 4D',
-        price: 2500,
-        location: 'Cebu City, Cebu',
-        category: 'Cinema',
-    },
-    {
-        id: 6,
-        name: 'Canon EOS 5D Mark IV',
-        price: 900,
-        location: 'Davao City, Davao',
-        category: 'DSLR',
-    },
-];
+type Listing = {
+    id: number;
+    title: string;
+    brand: string;
+    model: string;
+    category: string;
+    price_per_day: string | number;
+    status: 'available' | 'unavailable';
+    images: ListingImage[];
+};
+
+type Props = {
+    listings: Listing[];
+};
 
 function ListingCard({ listing }: { listing: Listing }) {
     return (
         <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md">
-            <div className="flex aspect-[4/3] items-center justify-center bg-muted">
-                <Camera className="size-12 text-muted-foreground/40" />
-            </div>
+            {listing.images.length > 0 ? (
+                <img
+                    src={`/storage/${listing.images[0].image_path}`}
+                    alt={listing.title}
+                    className="aspect-[4/3] w-full object-cover"
+                />
+            ) : (
+                <div className="flex aspect-[4/3] items-center justify-center bg-muted">
+                    <Camera className="size-12 text-muted-foreground/40" />
+                </div>
+            )}
 
             <div className="space-y-1 p-4">
                 <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                     {listing.category}
                 </span>
+
                 <h3 className="leading-tight font-semibold text-foreground">
-                    {listing.name}
+                    {listing.title}
                 </h3>
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <MapPin className="size-3.5 shrink-0" />
-                    <span>{listing.location}</span>
-                </div>
+
+                <p className="text-sm text-muted-foreground">
+                    {listing.brand} {listing.model}
+                </p>
+
                 <p className="pt-1 text-base font-bold text-foreground">
-                    ₱{listing.price.toLocaleString()}
+                    ₱{Number(listing.price_per_day).toLocaleString('en-PH')}
                     <span className="text-sm font-normal text-muted-foreground">
-                        {' '}
-                        / day
+                        {' '}/ day
                     </span>
                 </p>
             </div>
@@ -136,7 +112,7 @@ function SidebarItem({
     );
 }
 
-export default function Browse() {
+export default function Browse({ listings }: Props) {
     const { auth } = usePage<{ auth: { user: { name: string } | null } }>()
         .props;
     const initials =
@@ -150,12 +126,14 @@ export default function Browse() {
             .toUpperCase() ?? '';
     const [search, setSearch] = useState('');
     const [location, setLocation] = useState('');
-    const filtered = SAMPLE_LISTINGS.filter((l) => {
-        const matchName = l.name.toLowerCase().includes(search.toLowerCase());
-        const matchLocation = l.location
-            .toLowerCase()
-            .includes(location.toLowerCase());
-        return matchName && matchLocation;
+    const filtered = listings.filter((listing) => {
+        const searchableText =
+            `${listing.title} ${listing.brand} ${listing.model} ${listing.category}`.toLowerCase();
+
+        return (
+            searchableText.includes(search.toLowerCase()) &&
+            location.trim() === ''
+        );
     });
 
     return (
@@ -242,7 +220,10 @@ export default function Browse() {
                                             <p className="px-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                                                 My Equipment
                                             </p>
-                                            <Link href="/my-listings" className="block">
+                                            <Link
+                                                href="/my-listings"
+                                                className="block"
+                                            >
                                                 <SidebarItem
                                                     icon={<Package />}
                                                     label="My Listings"
@@ -369,10 +350,13 @@ export default function Browse() {
                     {filtered.length > 0 ? (
                         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                             {filtered.map((listing) => (
-                                <ListingCard
+                                <Link
                                     key={listing.id}
-                                    listing={listing}
-                                />
+                                    href={`/listings/${listing.id}`}
+                                    className="block focus:outline-none"
+                                >
+                                    <ListingCard listing={listing} />
+                                </Link>
                             ))}
                         </div>
                     ) : (
