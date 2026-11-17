@@ -1,4 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
@@ -189,7 +190,6 @@ export default function CreateListing() {
                         <InputError message={errors.description} />
                     </div>
 
-                    {/* Condition + Status */}
                     <div className="grid gap-4 sm:grid-cols-2">
                         <div className="grid gap-2">
                             <Label htmlFor="condition">Condition</Label>
@@ -300,6 +300,15 @@ export default function CreateListing() {
                     </div>
 
                     <div className="flex items-center gap-4 pt-2">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            asChild
+                            className="min-w-32 hover:cursor-pointer">
+                            <Link href="/my-listings">
+                                Cancel
+                            </Link>
+                        </Button>
                         <Button
                             type="submit"
                             disabled={processing}
