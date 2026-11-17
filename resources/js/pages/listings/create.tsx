@@ -317,6 +317,6 @@ export default function CreateListing() {
 CreateListing.layout = {
     breadcrumbs: [
         { title: 'Home', href: '/' },
-        { title: 'Create Listing', href: '/listings/create' },
+        { title: 'Create Listing', href: '/my-listings/create' },
     ],
 };

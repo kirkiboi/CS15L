@@ -13,7 +13,7 @@ Route::post('/verify-code/resend', [EmailVerificationCodeController::class,'rese
 Route::inertia('/', 'browse')->name('home');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
-    Route::get('listings/create', [ListingController::class, 'create'])->name('listings.create');
+    Route::get('my-listings/create', [ListingController::class, 'create'])->name('listings.create');
     Route::post('listings', [ListingController::class, 'store'])->name('listings.store');
     Route::get('my-listings', [ListingController::class, 'index'])->name('listings.index');
 });

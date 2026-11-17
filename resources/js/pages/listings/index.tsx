@@ -37,7 +37,7 @@ export default function MyListings({ listings }: Props) {
                     />
 
                     <Button asChild>
-                        <Link href="/listings/create">
+                        <Link href="/my-listings/create">
                             <Plus className="mr-2 size-4" />
                             Add Listing
                         </Link>

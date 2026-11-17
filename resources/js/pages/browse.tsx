@@ -242,10 +242,12 @@ export default function Browse() {
                                             <p className="px-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                                                 My Equipment
                                             </p>
-                                            <SidebarItem
-                                                icon={<Package />}
-                                                label="My Listings"
-                                            />
+                                            <Link href="/my-listings" className="block">
+                                                <SidebarItem
+                                                    icon={<Package />}
+                                                    label="My Listings"
+                                                />
+                                            </Link>
                                             <SidebarItem
                                                 icon={<ClipboardList />}
                                                 label="Rental Requests"
