@@ -49,7 +49,8 @@ export default function ListingShow({ listing }: Props) {
                 <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
                     <Link
                         href="/"
-                        className="text-xl font-bold tracking-tight text-foreground">
+                        className="text-xl font-bold tracking-tight text-foreground"
+                    >
                         LetMeSee
                     </Link>
                 </div>
@@ -61,7 +62,8 @@ export default function ListingShow({ listing }: Props) {
                         asChild
                         variant="outline"
                         size="sm"
-                        className="gap-2">
+                        className="gap-2"
+                    >
                         <Link href="/">
                             <ArrowLeft className="size-4" />
                             Back to Browse
@@ -98,7 +100,8 @@ export default function ListingShow({ listing }: Props) {
                                             onClick={() =>
                                                 setSelectedImageIndex(index)
                                             }
-                                            className={`relative size-20 shrink-0 overflow-hidden rounded-lg border-2 transition-all hover:opacity-90 ${selectedImageIndex === index ? 'border-primary ring-2 ring-primary/20' : 'border-border'}`}>
+                                            className={`relative size-20 shrink-0 overflow-hidden rounded-lg border-2 transition-all hover:opacity-90 ${selectedImageIndex === index ? 'border-primary ring-2 ring-primary/20' : 'border-border'}`}
+                                        >
                                             <img
                                                 src={`/storage/${img.image_path}`}
                                                 alt={`${listing.title} thumbnail ${index + 1}`}
@@ -125,14 +128,24 @@ export default function ListingShow({ listing }: Props) {
                             <div className="flex flex-wrap items-center gap-2">
                                 <Badge
                                     variant="outline"
-                                    className="gap-1 font-medium">
+                                    className="gap-1 font-medium"
+                                >
                                     <Tag className="size-3" />
                                     {listing.category}
                                 </Badge>
                                 <Badge
-                                    variant={isAvailable ? 'default' : 'secondary'}
-                                    className={isAvailable ? 'bg-emerald-600 text-white hover:bg-emerald-600' : ''}>
-                                    {isAvailable ? 'Available for Rent' : 'Unavailable'}
+                                    variant={
+                                        isAvailable ? 'default' : 'secondary'
+                                    }
+                                    className={
+                                        isAvailable
+                                            ? 'bg-emerald-600 text-white hover:bg-emerald-600'
+                                            : ''
+                                    }
+                                >
+                                    {isAvailable
+                                        ? 'Available for Rent'
+                                        : 'Unavailable'}
                                 </Badge>
                             </div>
 
