@@ -209,4 +209,27 @@ public function update(Request $request, Listing $listing): RedirectResponse{
 
         return to_route('home');
     }
+
+    public function destroy(Request $request, Listing $listing): RedirectResponse
+    {
+        abort_unless($listing->user_id === $request->user()->id, 403);
+
+        $imagePaths = $listing->images()->pluck('image_path')->filter()->all();
+
+        DB::transaction(function () use ($listing) {
+            $listing->images()->delete();
+            $listing->delete();
+        });
+
+        if (!empty($imagePaths)) {
+            Storage::disk('public')->delete($imagePaths);
+        }
+
+        Inertia::flash('toast', [
+            'type' => 'success',
+            'message' => 'Listing deleted successfully!',
+        ]);
+
+        return to_route('listings.index');
+    }
 }

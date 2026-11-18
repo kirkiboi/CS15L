@@ -1,7 +1,20 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
-import { Plus, Camera, Pencil } from 'lucide-react';
+import { Spinner } from '@/components/ui/spinner';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Plus, Camera, Pencil, Trash2 } from 'lucide-react';
 
 type ListingImage = {
     id: number;
@@ -24,6 +37,21 @@ type Props = {
 };
 
 export default function MyListings({ listings }: Props) {
+    const [deletingId, setDeletingId] = useState<number | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    function handleDelete(id: number) {
+        if (isDeleting) return;
+        setIsDeleting(true);
+        router.delete(`/listings/${id}`, {
+            preserveScroll: true,
+            onFinish: () => {
+                setIsDeleting(false);
+                setDeletingId(null);
+            },
+        });
+    }
+
     return (
         <>
             <Head title="My Listings" />
@@ -113,18 +141,91 @@ export default function MyListings({ listings }: Props) {
                                             </span>
                                         </p>
 
-                                        <div className="flex items-center justify-end border-t border-border pt-2">
+                                        <div className="flex items-center gap-2 border-t border-border pt-2">
                                             <Button
                                                 asChild
                                                 variant="outline"
                                                 size="sm"
-                                                className="w-full hover:cursor-pointer">
+                                                className="flex-1 hover:cursor-pointer">
                                                 <Link
                                                     href={`/my-listings/${listing.id}/edit`}>
                                                     <Pencil className="mr-1.5 size-3.5" />
                                                     Edit
                                                 </Link>
                                             </Button>
+
+                                            <AlertDialog
+                                                open={deletingId === listing.id}
+                                                onOpenChange={(open) => {
+                                                    if (!isDeleting) {
+                                                        setDeletingId(
+                                                            open ? listing.id : null,
+                                                        );
+                                                    }
+                                                }}>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        disabled={isDeleting}
+                                                        className="flex-1 text-destructive hover:cursor-pointer hover:bg-destructive/10 hover:text-destructive">
+                                                        <Trash2 className="mr-1.5 size-3.5" />
+                                                        Delete
+                                                    </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>
+                                                            Delete Listing
+                                                        </AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            Are you sure you
+                                                            want to delete{' '}
+                                                            <span className="font-semibold text-foreground">
+                                                                "{listing.title}
+                                                                "
+                                                            </span>
+                                                            ? This action is
+                                                            permanent and cannot
+                                                            be undone. All
+                                                            listing details and
+                                                            associated photos
+                                                            will be permanently
+                                                            deleted.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel
+                                                            disabled={
+                                                                isDeleting
+                                                            }>
+                                                            Cancel
+                                                        </AlertDialogCancel>
+                                                        <AlertDialogAction
+                                                            disabled={
+                                                                isDeleting
+                                                            }
+                                                            className="cursor-pointer bg-destructive text-white hover:bg-destructive/90"
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                handleDelete(
+                                                                    listing.id,
+                                                                );
+                                                            }}>
+                                                            {isDeleting &&
+                                                                deletingId ===
+                                                                listing.id ? (
+                                                                <>
+                                                                    <Spinner className="mr-1.5" />
+                                                                    Deleting…
+                                                                </>
+                                                            ) : (
+                                                                'Delete Permanently'
+                                                            )}
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
                                         </div>
                                     </div>
                                 </div>

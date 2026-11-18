@@ -5,7 +5,13 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { ImagePlus, X } from 'lucide-react';
 
@@ -68,8 +74,12 @@ const CONDITIONS = [
 ];
 
 export default function EditListing({ listing }: Props) {
-    const categories = DEFAULT_CATEGORIES.includes(listing.category) ? DEFAULT_CATEGORIES : [listing.category, ...DEFAULT_CATEGORIES];
-    const [existingImages, setExistingImages] = useState<ListingImage[]>(listing.images ?? [],);
+    const categories = DEFAULT_CATEGORIES.includes(listing.category)
+        ? DEFAULT_CATEGORIES
+        : [listing.category, ...DEFAULT_CATEGORIES];
+    const [existingImages, setExistingImages] = useState<ListingImage[]>(
+        listing.images ?? [],
+    );
 
     const { data, setData, post, processing, errors } = useForm<FormData>({
         _method: 'put',
@@ -86,7 +96,9 @@ export default function EditListing({ listing }: Props) {
     });
 
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [previews, setPreviews] = useState<{ name: string; url: string }[]>([],);
+    const [previews, setPreviews] = useState<{ name: string; url: string }[]>(
+        [],
+    );
 
     const previewsRef = useRef<{ name: string; url: string }[]>([]);
 
@@ -114,7 +126,10 @@ export default function EditListing({ listing }: Props) {
         const combined = [...data.images, ...filesToAdd];
         setData('images', combined);
 
-        const newPreviews = filesToAdd.map((f) => ({ name: f.name, url: URL.createObjectURL(f), }));
+        const newPreviews = filesToAdd.map((f) => ({
+            name: f.name,
+            url: URL.createObjectURL(f),
+        }));
         setPreviews((prev) => [...prev, ...newPreviews]);
         if (fileInputRef.current) fileInputRef.current.value = '';
     }
@@ -153,7 +168,8 @@ export default function EditListing({ listing }: Props) {
                 <form
                     onSubmit={submit}
                     encType="multipart/form-data"
-                    className="mt-6 space-y-6">
+                    className="mt-6 space-y-6"
+                >
                     <div className="grid gap-2">
                         <Label htmlFor="title">Listing Title</Label>
                         <Input
@@ -203,10 +219,12 @@ export default function EditListing({ listing }: Props) {
                         <Label htmlFor="category">Category</Label>
                         <Select
                             value={data.category}
-                            onValueChange={(v) => setData('category', v)}>
+                            onValueChange={(v) => setData('category', v)}
+                        >
                             <SelectTrigger
                                 id="category"
-                                className="hover:cursor-pointer">
+                                className="hover:cursor-pointer"
+                            >
                                 <SelectValue placeholder="Select a category" />
                             </SelectTrigger>
                             <SelectContent>
@@ -214,7 +232,8 @@ export default function EditListing({ listing }: Props) {
                                     <SelectItem
                                         key={c}
                                         value={c}
-                                        className="hover:cursor-pointer">
+                                        className="hover:cursor-pointer"
+                                    >
                                         {c}
                                     </SelectItem>
                                 ))}
@@ -245,10 +264,12 @@ export default function EditListing({ listing }: Props) {
                             <Label htmlFor="condition">Condition</Label>
                             <Select
                                 value={data.condition}
-                                onValueChange={(v) => setData('condition', v)}>
+                                onValueChange={(v) => setData('condition', v)}
+                            >
                                 <SelectTrigger
                                     id="condition"
-                                    className="hover:cursor-pointer">
+                                    className="hover:cursor-pointer"
+                                >
                                     <SelectValue placeholder="Select condition" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -256,7 +277,8 @@ export default function EditListing({ listing }: Props) {
                                         <SelectItem
                                             key={c.value}
                                             value={c.value}
-                                            className="cursor-pointer">
+                                            className="cursor-pointer"
+                                        >
                                             {c.label}
                                         </SelectItem>
                                     ))}
@@ -269,21 +291,25 @@ export default function EditListing({ listing }: Props) {
                             <Label htmlFor="status">Availability</Label>
                             <Select
                                 value={data.status}
-                                onValueChange={(v) => setData('status', v)}>
+                                onValueChange={(v) => setData('status', v)}
+                            >
                                 <SelectTrigger
                                     id="status"
-                                    className="cursor-pointer">
+                                    className="cursor-pointer"
+                                >
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem
                                         value="available"
-                                        className="cursor-pointer">
+                                        className="cursor-pointer"
+                                    >
                                         Available
                                     </SelectItem>
                                     <SelectItem
                                         value="unavailable"
-                                        className="cursor-pointer">
+                                        className="cursor-pointer"
+                                    >
                                         Unavailable
                                     </SelectItem>
                                 </SelectContent>
@@ -334,7 +360,8 @@ export default function EditListing({ listing }: Props) {
                                     {existingImages.map((img) => (
                                         <div
                                             key={img.id}
-                                            className="relative aspect-square overflow-hidden rounded-md border border-border">
+                                            className="relative aspect-square overflow-hidden rounded-md border border-border"
+                                        >
                                             <img
                                                 src={`/storage/${img.image_path}`}
                                                 alt="Current listing photo"
@@ -347,7 +374,8 @@ export default function EditListing({ listing }: Props) {
                                                 }
                                                 className="absolute top-1 right-1 rounded-full bg-destructive/90 p-1 text-white shadow-xs hover:cursor-pointer hover:bg-destructive"
                                                 aria-label="Remove existing photo"
-                                                title="Remove photo">
+                                                title="Remove photo"
+                                            >
                                                 <X className="size-3.5" />
                                             </button>
                                         </div>
@@ -365,7 +393,8 @@ export default function EditListing({ listing }: Props) {
                                     {previews.map((p, i) => (
                                         <div
                                             key={i}
-                                            className="relative aspect-square overflow-hidden rounded-md border border-border">
+                                            className="relative aspect-square overflow-hidden rounded-md border border-border"
+                                        >
                                             <img
                                                 src={p.url}
                                                 alt={p.name}
@@ -377,7 +406,8 @@ export default function EditListing({ listing }: Props) {
                                                     removeNewImage(i)
                                                 }
                                                 className="absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white hover:cursor-pointer hover:bg-black/80"
-                                                aria-label="Remove new photo">
+                                                aria-label="Remove new photo"
+                                            >
                                                 <X className="size-3.5" />
                                             </button>
                                         </div>
@@ -390,9 +420,12 @@ export default function EditListing({ listing }: Props) {
                             type="button"
                             disabled={totalImagesCount >= 10}
                             onClick={() => fileInputRef.current?.click()}
-                            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-input px-4 py-6 text-sm text-muted-foreground transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50">
+                            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-input px-4 py-6 text-sm text-muted-foreground transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
+                        >
                             <ImagePlus className="size-5" />
-                            {totalImagesCount >= 10 ? 'Maximum 10 photos reached' : 'Click to add more photos'}
+                            {totalImagesCount >= 10
+                                ? 'Maximum 10 photos reached'
+                                : 'Click to add more photos'}
                         </button>
                         <input
                             ref={fileInputRef}
@@ -410,13 +443,15 @@ export default function EditListing({ listing }: Props) {
                             type="button"
                             variant="outline"
                             asChild
-                            className="min-w-32 hover:cursor-pointer">
+                            className="min-w-32 hover:cursor-pointer"
+                        >
                             <Link href="/my-listings">Cancel</Link>
                         </Button>
                         <Button
                             type="submit"
                             disabled={processing}
-                            className="min-w-32 hover:cursor-pointer">
+                            className="min-w-32 hover:cursor-pointer"
+                        >
                             {processing && <Spinner />}
                             {processing ? 'Saving…' : 'Save Changes'}
                         </Button>

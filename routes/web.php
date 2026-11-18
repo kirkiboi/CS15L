@@ -21,6 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('my-listings/{listing}/edit', [ListingController::class, 'edit'])->whereNumber('listing')->name('listings.edit');
     Route::get('listings/{listing}/edit', [ListingController::class, 'edit'])->whereNumber('listing');
     Route::match(['put', 'patch'], 'listings/{listing}', [ListingController::class, 'update'])->whereNumber('listing')->name('listings.update');
+    Route::delete('listings/{listing}', [ListingController::class, 'destroy'])->whereNumber('listing')->name('listings.destroy');
 });
 Route::inertia('/account', 'account')->middleware('auth')->name('account');
 Route::get('/admin', function () {
