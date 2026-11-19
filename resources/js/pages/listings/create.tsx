@@ -28,7 +28,17 @@ type FormData = {
     images: File[];
 };
 
-const CATEGORIES = ['DSLR', 'Drone', 'Lens', 'Lighting', 'Accessory'];
+const CATEGORIES = [
+    'Mirrorless',
+    'DSLR',
+    'Cinema',
+    'Action',
+    'Medium Format',
+    'Drone',
+    'Lens',
+    'Lighting',
+    'Accessory',
+];
 
 const CONDITIONS = [
     { value: 'mint', label: 'Mint' },
