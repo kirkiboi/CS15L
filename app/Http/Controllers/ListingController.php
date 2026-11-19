@@ -77,11 +77,6 @@ public function update(Request $request, Listing $listing): RedirectResponse{
 
     $removedImageIds = $validated['removed_image_ids'] ?? [];
     $newImages = $request->file('images') ?? [];
-    dd([
-    'existing_images' => $listing->images()->count(),
-    'uploaded_images' => count($newImages),
-    'removed_image_ids' => $removedImageIds,
-    ]);
     $currentImagesCount = $listing->images()->count();
     $removedCount = $listing->images()->whereIn('id', $removedImageIds)->count();
     $keptCount = $currentImagesCount - $removedCount;
