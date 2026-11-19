@@ -39,7 +39,10 @@ class ListingController extends Controller
 
     public function show(Listing $listing): Response
     {
-        $listing->load(['images', 'user']);
+        $listing->load([
+            'images',
+            'user:id,name',
+        ]);
 
         return Inertia::render('listings/show', [
             'listing' => $listing,
