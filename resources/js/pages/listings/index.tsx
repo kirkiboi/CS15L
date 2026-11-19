@@ -90,7 +90,7 @@ export default function MyListings({ listings }: Props) {
                             </p>
 
                             <Button asChild className="mt-6">
-                                <Link href="/listings/create">
+                                <Link href="/my-listings/create">
                                     <Plus className="mr-2 size-4" />
                                     Add Your First Listing
                                 </Link>

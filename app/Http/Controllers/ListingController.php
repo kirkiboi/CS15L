@@ -39,7 +39,10 @@ class ListingController extends Controller
 
     public function show(Listing $listing): Response
     {
-        $listing->load(['images', 'user']);
+        $listing->load([
+            'images',
+            'user:id,name',
+        ]);
 
         return Inertia::render('listings/show', [
             'listing' => $listing,
@@ -77,11 +80,6 @@ public function update(Request $request, Listing $listing): RedirectResponse{
 
     $removedImageIds = $validated['removed_image_ids'] ?? [];
     $newImages = $request->file('images') ?? [];
-    dd([
-    'existing_images' => $listing->images()->count(),
-    'uploaded_images' => count($newImages),
-    'removed_image_ids' => $removedImageIds,
-    ]);
     $currentImagesCount = $listing->images()->count();
     $removedCount = $listing->images()->whereIn('id', $removedImageIds)->count();
     $keptCount = $currentImagesCount - $removedCount;
@@ -163,8 +161,7 @@ public function update(Request $request, Listing $listing): RedirectResponse{
         return Inertia::render('listings/create');
     }
 
-    public function store(Request $request): RedirectResponse
-    {
+    public function store(Request $request): RedirectResponse{
         $validated = $request->validate([
             'title'         => ['required', 'string', 'max:255'],
             'brand'         => ['required', 'string', 'max:100'],
@@ -175,38 +172,44 @@ public function update(Request $request, Listing $listing): RedirectResponse{
             'price_per_day' => ['required', 'numeric', 'gt:0', 'max:999999.99'],
             'status'        => ['required', 'string', 'in:available,unavailable'],
             'images'        => ['nullable', 'array', 'max:10'],
-            'images.*'      => ['image', 'max:5120'], // 5 MB per image
+            'images.*'      => ['image', 'max:5120'],
         ]);
 
         $storedPaths = [];
 
-        DB::transaction(function () use ($validated, $request, &$storedPaths) {
-            $listing = Listing::create([
-                'user_id'       => $request->user()->id,
-                'title'         => $validated['title'],
-                'brand'         => $validated['brand'],
-                'model'         => $validated['model'],
-                'category'      => $validated['category'],
-                'description'   => $validated['description'],
-                'condition'     => $validated['condition'],
-                'price_per_day' => $validated['price_per_day'],
-                'status'        => $validated['status'],
-            ]);
+        try {
+            DB::transaction(function () use ($validated, $request, &$storedPaths) {
+                $listing = Listing::create([
+                    'user_id'       => $request->user()->id,
+                    'title'         => $validated['title'],
+                    'brand'         => $validated['brand'],
+                    'model'         => $validated['model'],
+                    'category'      => $validated['category'],
+                    'description'   => $validated['description'],
+                    'condition'     => $validated['condition'],
+                    'price_per_day' => $validated['price_per_day'],
+                    'status'        => $validated['status'],
+                ]);
 
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
-                    $path = $image->store('listings', 'public');
-                    $storedPaths[] = $path;
-                    ListingImage::create([
-                        'listing_id' => $listing->id,
-                        'image_path' => $path,
-                    ]);
+                if ($request->hasFile('images')) {
+                    foreach ($request->file('images') as $image) {
+                        $path = $image->store('listings', 'public');
+                        if (!$path) {
+                            throw new \RuntimeException('Unable to store an uploaded image.');
+                        }
+                        $storedPaths[] = $path;
+                        ListingImage::create([
+                            'listing_id' => $listing->id,
+                            'image_path' => $path,
+                        ]);
+                    }
                 }
-            }
-        });
-
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Listing created successfully!']);
-
+            });
+        } catch (\Throwable $exception) {
+            Storage::disk('public')->delete($storedPaths);
+            throw $exception;
+        }
+        Inertia::flash('toast', ['type' => 'success','message' => 'Listing created successfully!',]);
         return to_route('home');
     }
 
