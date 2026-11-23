@@ -5,8 +5,6 @@ namespace App\Actions\Fortify;
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
 use App\Models\User;
-use App\Notifications\EmailVerificationCode;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
@@ -26,15 +24,10 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
         ])->validate();
 
-        $code = (string) random_int(100000, 999999);
-        $user = User::create([
+        return User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => $input['password'],
-            'email_verification_code' => Hash::make($code),
-            'email_verification_expires_at' => now()->addMinutes(10),
         ]);
-        $user->notify(new EmailVerificationCode($code));
-        return $user;
     }
 }
