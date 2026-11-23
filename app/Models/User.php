@@ -13,6 +13,8 @@ use Illuminate\Support\Carbon;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use App\Notifications\EmailVerificationCode;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * @property int $id
@@ -50,6 +52,17 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     }
     public function sendEmailVerificationNotification(): void
     {
-        
+        if ($this->hasVerifiedEmail()) {
+            return;
+        }
+
+        $code = (string) random_int(100000, 999999);
+
+        $this->forceFill([
+            'email_verification_code' => Hash::make($code),
+            'email_verification_expires_at' => now()->addMinutes(10),
+        ])->save();
+
+        $this->notify(new EmailVerificationCode($code));
     }
 }
