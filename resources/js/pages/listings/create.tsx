@@ -21,6 +21,7 @@ type FormData = {
     brand: string;
     model: string;
     category: string;
+    pickup_location: string;
     description: string;
     condition: string;
     price_per_day: string;
@@ -55,6 +56,7 @@ export default function CreateListing() {
             brand: '',
             model: '',
             category: '',
+            pickup_location: '',
             description: '',
             condition: '',
             price_per_day: '',
@@ -187,6 +189,23 @@ export default function CreateListing() {
                             </SelectContent>
                         </Select>
                         <InputError message={errors.category} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="pickup_location">
+                            Pick-Up Location
+                        </Label>
+                        <Input
+                            id="pickup_location"
+                            name="pickup_location"
+                            value={data.pickup_location}
+                            onChange={(e) =>
+                                setData('pickup_location', e.target.value)
+                            }
+                            placeholder="e.g. Makati City, Metro Manila"
+                            required
+                        />
+                        <InputError message={errors.pickup_location} />
                     </div>
 
                     <div className="grid gap-2">

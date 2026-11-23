@@ -2,7 +2,14 @@ import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Camera, User, Tag, ShieldCheck } from 'lucide-react';
+import {
+    ArrowLeft,
+    Camera,
+    User,
+    Tag,
+    ShieldCheck,
+    MapPin,
+} from 'lucide-react';
 
 type ListingImage = {
     id: number;
@@ -22,6 +29,7 @@ type Listing = {
     brand: string;
     model: string;
     category: string;
+    pickup_location: string;
     description: string;
     condition: string;
     price_per_day: string | number;
@@ -156,6 +164,12 @@ export default function ListingShow({ listing }: Props) {
                                 <p className="mt-1 text-base text-muted-foreground">
                                     {listing.brand} {listing.model}
                                 </p>
+                                {listing.pickup_location && (
+                                    <p className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
+                                        <MapPin className="size-4 shrink-0 text-muted-foreground" />
+                                        <span>{listing.pickup_location}</span>
+                                    </p>
+                                )}
                             </div>
 
                             <div className="mt-4 rounded-lg bg-muted/60 p-4">
@@ -215,6 +229,18 @@ export default function ListingShow({ listing }: Props) {
                                         {listing.condition}
                                     </dd>
                                 </div>
+
+                                {listing.pickup_location && (
+                                    <div className="col-span-2">
+                                        <dt className="text-xs font-medium text-muted-foreground uppercase">
+                                            Pick-Up Location
+                                        </dt>
+                                        <dd className="mt-1 flex items-center gap-1 font-medium text-foreground">
+                                            <MapPin className="size-3.5 text-muted-foreground" />
+                                            {listing.pickup_location}
+                                        </dd>
+                                    </div>
+                                )}
                             </dl>
                         </div>
 

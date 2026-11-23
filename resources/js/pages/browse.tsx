@@ -41,6 +41,7 @@ type Listing = {
     brand: string;
     model: string;
     category: string;
+    pickup_location: string;
     price_per_day: string | number;
     status: 'available' | 'unavailable';
     images: ListingImage[];
@@ -77,6 +78,15 @@ function ListingCard({ listing }: { listing: Listing }) {
                 <p className="text-sm text-muted-foreground">
                     {listing.brand} {listing.model}
                 </p>
+
+                {listing.pickup_location && (
+                    <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <MapPin className="size-3.5 shrink-0" />
+                        <span className="truncate">
+                            {listing.pickup_location}
+                        </span>
+                    </p>
+                )}
 
                 <p className="pt-1 text-base font-bold text-foreground">
                     ₱{Number(listing.price_per_day).toLocaleString('en-PH')}
@@ -130,11 +140,19 @@ export default function Browse({ listings }: Props) {
     const filtered = listings.filter((listing) => {
         const searchableText =
             `${listing.title} ${listing.brand} ${listing.model} ${listing.category}`.toLowerCase();
+        const matchesKeyword =
+            search.trim() === '' ||
+            searchableText.includes(search.trim().toLowerCase());
+        const matchesLocation =
+            location.trim() === '' ||
+            Boolean(
+                listing.pickup_location &&
+                listing.pickup_location
+                    .toLowerCase()
+                    .includes(location.trim().toLowerCase()),
+            );
 
-        return (
-            searchableText.includes(search.toLowerCase()) &&
-            location.trim() === ''
-        );
+        return matchesKeyword && matchesLocation;
     });
 
     return (
