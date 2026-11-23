@@ -27,6 +27,7 @@ type Listing = {
     brand: string;
     model: string;
     category: string;
+    pickup_location: string;
     price_per_day: string | number;
     status: 'available' | 'unavailable';
     images: ListingImage[];
@@ -146,9 +147,11 @@ export default function MyListings({ listings }: Props) {
                                                 asChild
                                                 variant="outline"
                                                 size="sm"
-                                                className="flex-1 hover:cursor-pointer">
+                                                className="flex-1 hover:cursor-pointer"
+                                            >
                                                 <Link
-                                                    href={`/my-listings/${listing.id}/edit`}>
+                                                    href={`/my-listings/${listing.id}/edit`}
+                                                >
                                                     <Pencil className="mr-1.5 size-3.5" />
                                                     Edit
                                                 </Link>
@@ -159,16 +162,20 @@ export default function MyListings({ listings }: Props) {
                                                 onOpenChange={(open) => {
                                                     if (!isDeleting) {
                                                         setDeletingId(
-                                                            open ? listing.id : null,
+                                                            open
+                                                                ? listing.id
+                                                                : null,
                                                         );
                                                     }
-                                                }}>
+                                                }}
+                                            >
                                                 <AlertDialogTrigger asChild>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
                                                         disabled={isDeleting}
-                                                        className="flex-1 text-destructive hover:cursor-pointer hover:bg-destructive/10 hover:text-destructive">
+                                                        className="flex-1 text-destructive hover:cursor-pointer hover:bg-destructive/10 hover:text-destructive"
+                                                    >
                                                         <Trash2 className="mr-1.5 size-3.5" />
                                                         Delete
                                                     </Button>
@@ -198,7 +205,8 @@ export default function MyListings({ listings }: Props) {
                                                         <AlertDialogCancel
                                                             disabled={
                                                                 isDeleting
-                                                            }>
+                                                            }
+                                                        >
                                                             Cancel
                                                         </AlertDialogCancel>
                                                         <AlertDialogAction
@@ -211,9 +219,10 @@ export default function MyListings({ listings }: Props) {
                                                                 handleDelete(
                                                                     listing.id,
                                                                 );
-                                                            }}>
+                                                            }}
+                                                        >
                                                             {isDeleting &&
-                                                                deletingId ===
+                                                            deletingId ===
                                                                 listing.id ? (
                                                                 <>
                                                                     <Spinner className="mr-1.5" />

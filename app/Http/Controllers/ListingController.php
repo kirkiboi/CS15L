@@ -68,6 +68,7 @@ public function update(Request $request, Listing $listing): RedirectResponse{
         'brand'               => ['required', 'string', 'max:100'],
         'model'               => ['required', 'string', 'max:100'],
         'category'            => ['required', 'string', 'max:100'],
+        'pickup_location'     => ['required', 'string', 'max:255'],
         'description'         => ['required', 'string', 'max:5000'],
         'condition'           => ['required', 'string', 'in:mint,excellent,good,fair,poor'],
         'price_per_day'       => ['required', 'numeric', 'gt:0', 'max:999999.99'],
@@ -112,14 +113,15 @@ public function update(Request $request, Listing $listing): RedirectResponse{
             &$imagesToDelete
         ) {
             $listing->update([
-                'title'         => $validated['title'],
-                'brand'         => $validated['brand'],
-                'model'         => $validated['model'],
-                'category'      => $validated['category'],
-                'description'   => $validated['description'],
-                'condition'     => $validated['condition'],
-                'price_per_day' => $validated['price_per_day'],
-                'status'        => $validated['status'],
+                'title'           => $validated['title'],
+                'brand'           => $validated['brand'],
+                'model'           => $validated['model'],
+                'category'        => $validated['category'],
+                'pickup_location' => $validated['pickup_location'],
+                'description'     => $validated['description'],
+                'condition'       => $validated['condition'],
+                'price_per_day'   => $validated['price_per_day'],
+                'status'          => $validated['status'],
             ]);
 
             if (!empty($removedImageIds)) {
@@ -163,16 +165,17 @@ public function update(Request $request, Listing $listing): RedirectResponse{
 
     public function store(Request $request): RedirectResponse{
         $validated = $request->validate([
-            'title'         => ['required', 'string', 'max:255'],
-            'brand'         => ['required', 'string', 'max:100'],
-            'model'         => ['required', 'string', 'max:100'],
-            'category'      => ['required', 'string', 'max:100'],
-            'description'   => ['required', 'string', 'max:5000'],
-            'condition'     => ['required', 'string', 'in:mint,excellent,good,fair,poor'],
-            'price_per_day' => ['required', 'numeric', 'gt:0', 'max:999999.99'],
-            'status'        => ['required', 'string', 'in:available,unavailable'],
-            'images'        => ['nullable', 'array', 'max:10'],
-            'images.*'      => ['image', 'max:5120'],
+            'title'           => ['required', 'string', 'max:255'],
+            'brand'           => ['required', 'string', 'max:100'],
+            'model'           => ['required', 'string', 'max:100'],
+            'category'        => ['required', 'string', 'max:100'],
+            'pickup_location' => ['required', 'string', 'max:255'],
+            'description'     => ['required', 'string', 'max:5000'],
+            'condition'       => ['required', 'string', 'in:mint,excellent,good,fair,poor'],
+            'price_per_day'   => ['required', 'numeric', 'gt:0', 'max:999999.99'],
+            'status'          => ['required', 'string', 'in:available,unavailable'],
+            'images'          => ['nullable', 'array', 'max:10'],
+            'images.*'        => ['image', 'max:5120'],
         ]);
 
         $storedPaths = [];
@@ -180,15 +183,16 @@ public function update(Request $request, Listing $listing): RedirectResponse{
         try {
             DB::transaction(function () use ($validated, $request, &$storedPaths) {
                 $listing = Listing::create([
-                    'user_id'       => $request->user()->id,
-                    'title'         => $validated['title'],
-                    'brand'         => $validated['brand'],
-                    'model'         => $validated['model'],
-                    'category'      => $validated['category'],
-                    'description'   => $validated['description'],
-                    'condition'     => $validated['condition'],
-                    'price_per_day' => $validated['price_per_day'],
-                    'status'        => $validated['status'],
+                    'user_id'         => $request->user()->id,
+                    'title'           => $validated['title'],
+                    'brand'           => $validated['brand'],
+                    'model'           => $validated['model'],
+                    'category'        => $validated['category'],
+                    'pickup_location' => $validated['pickup_location'],
+                    'description'     => $validated['description'],
+                    'condition'       => $validated['condition'],
+                    'price_per_day'   => $validated['price_per_day'],
+                    'status'          => $validated['status'],
                 ]);
 
                 if ($request->hasFile('images')) {

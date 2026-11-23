@@ -28,6 +28,7 @@ type Listing = {
     brand: string;
     model: string;
     category: string;
+    pickup_location: string;
     description: string;
     condition: string;
     price_per_day: string | number;
@@ -45,6 +46,7 @@ type FormData = {
     brand: string;
     model: string;
     category: string;
+    pickup_location: string;
     description: string;
     condition: string;
     price_per_day: string;
@@ -87,6 +89,7 @@ export default function EditListing({ listing }: Props) {
         brand: listing.brand ?? '',
         model: listing.model ?? '',
         category: listing.category ?? '',
+        pickup_location: listing.pickup_location ?? '',
         description: listing.description ?? '',
         condition: listing.condition ?? '',
         price_per_day: String(listing.price_per_day ?? ''),
@@ -240,6 +243,23 @@ export default function EditListing({ listing }: Props) {
                             </SelectContent>
                         </Select>
                         <InputError message={errors.category} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="pickup_location">
+                            Pick-Up Location
+                        </Label>
+                        <Input
+                            id="pickup_location"
+                            name="pickup_location"
+                            value={data.pickup_location}
+                            onChange={(e) =>
+                                setData('pickup_location', e.target.value)
+                            }
+                            placeholder="e.g. Makati City, Metro Manila"
+                            required
+                        />
+                        <InputError message={errors.pickup_location} />
                     </div>
 
                     <div className="grid gap-2">
