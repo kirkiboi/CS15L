@@ -34,6 +34,7 @@ type Listing = {
     condition: string;
     price_per_day: string | number;
     status: 'available' | 'unavailable';
+    archived_at?: string | null;
     images: ListingImage[];
     user: Owner;
 };

@@ -14,31 +14,62 @@ use Inertia\Response;
 class ListingController extends Controller
 {
     public function browse(): Response
-{
-    $listings = Listing::query()
-        ->where('status', 'available')
-        ->with('images')
-        ->latest()
-        ->get();
-
-    return Inertia::render('browse', [
-        'listings' => $listings,
-    ]);
-}
-    public function index(Request $request): Response{
+    {
         $listings = Listing::query()
-            ->where('user_id', $request->user()->id)
+            ->whereNull('archived_at')
+            ->where('status', 'available')
             ->with('images')
             ->latest()
             ->get();
 
+        return Inertia::render('browse', [
+            'listings' => $listings,
+        ]);
+    }
+
+    public function index(Request $request): Response
+    {
+        $listings = Listing::query()
+            ->where('user_id', $request->user()->id)
+            ->whereNull('archived_at')
+            ->with('images')
+            ->latest()
+            ->get();
+
+        $archivedCount = Listing::query()
+            ->where('user_id', $request->user()->id)
+            ->whereNotNull('archived_at')
+            ->count();
+
         return Inertia::render('listings/index', [
             'listings' => $listings,
+            'archivedCount' => $archivedCount,
+        ]);
+    }
+
+    public function archived(Request $request): Response
+    {
+        $listings = Listing::query()
+            ->where('user_id', $request->user()->id)
+            ->whereNotNull('archived_at')
+            ->with('images')
+            ->latest('archived_at')
+            ->get();
+
+        $activeCount = Listing::query()
+            ->where('user_id', $request->user()->id)
+            ->whereNull('archived_at')
+            ->count();
+
+        return Inertia::render('listings/archived', [
+            'listings' => $listings,
+            'activeCount' => $activeCount,
         ]);
     }
 
     public function show(Listing $listing): Response
     {
+        abort_if($listing->archived_at !== null, 404);
         $listing->load([
             'images',
             'user:id,name',
@@ -217,26 +248,39 @@ public function update(Request $request, Listing $listing): RedirectResponse{
         return to_route('home');
     }
 
-    public function destroy(Request $request, Listing $listing): RedirectResponse
+    public function archive(Request $request, Listing $listing): RedirectResponse
     {
         abort_unless($listing->user_id === $request->user()->id, 403);
 
-        $imagePaths = $listing->images()->pluck('image_path')->filter()->all();
-
-        DB::transaction(function () use ($listing) {
-            $listing->images()->delete();
-            $listing->delete();
-        });
-
-        if (!empty($imagePaths)) {
-            Storage::disk('public')->delete($imagePaths);
+        if ($listing->archived_at === null) {
+            $listing->update([
+                'archived_at' => now(),
+            ]);
         }
 
         Inertia::flash('toast', [
             'type' => 'success',
-            'message' => 'Listing deleted successfully!',
+            'message' => 'Listing archived successfully!',
         ]);
 
         return to_route('listings.index');
+    }
+
+    public function restore(Request $request, Listing $listing): RedirectResponse
+    {
+        abort_unless($listing->user_id === $request->user()->id, 403);
+
+        if ($listing->archived_at !== null) {
+            $listing->update([
+                'archived_at' => null,
+            ]);
+        }
+
+        Inertia::flash('toast', [
+            'type' => 'success',
+            'message' => 'Listing restored successfully!',
+        ]);
+
+        return to_route('listings.archived');
     }
 }

@@ -3,18 +3,8 @@ import { useState } from 'react';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Plus, Camera, Pencil, Trash2 } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Plus, Camera, Pencil, Archive } from 'lucide-react';
 
 type ListingImage = {
     id: number;
@@ -30,25 +20,27 @@ type Listing = {
     pickup_location: string;
     price_per_day: string | number;
     status: 'available' | 'unavailable';
+    archived_at?: string | null;
     images: ListingImage[];
 };
 
 type Props = {
     listings: Listing[];
+    archivedCount?: number;
 };
 
-export default function MyListings({ listings }: Props) {
-    const [deletingId, setDeletingId] = useState<number | null>(null);
-    const [isDeleting, setIsDeleting] = useState(false);
+export default function MyListings({ listings, archivedCount = 0 }: Props) {
+    const [archivingId, setArchivingId] = useState<number | null>(null);
+    const [isArchiving, setIsArchiving] = useState(false);
 
-    function handleDelete(id: number) {
-        if (isDeleting) return;
-        setIsDeleting(true);
-        router.delete(`/listings/${id}`, {
+    function handleArchive(id: number) {
+        if (isArchiving) return;
+        setIsArchiving(true);
+        router.post(`/listings/${id}/archive`, {}, {
             preserveScroll: true,
             onFinish: () => {
-                setIsDeleting(false);
-                setDeletingId(null);
+                setIsArchiving(false);
+                setArchivingId(null);
             },
         });
     }
@@ -70,6 +62,19 @@ export default function MyListings({ listings }: Props) {
                             Add Listing
                         </Link>
                     </Button>
+                </div>
+
+                <div className="mt-6 flex border-b border-border">
+                    <Link
+                        href="/my-listings"
+                        className="border-b-2 border-primary px-4 py-2.5 text-sm font-semibold text-primary">
+                        Active Listings ({listings.length})
+                    </Link>
+                    <Link
+                        href="/my-listings/archived"
+                        className="border-b-2 border-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+                        Archived {archivedCount > 0 ? `(${archivedCount})` : ''}
+                    </Link>
                 </div>
 
                 <div className="mt-8">
@@ -158,78 +163,63 @@ export default function MyListings({ listings }: Props) {
                                             </Button>
 
                                             <AlertDialog
-                                                open={deletingId === listing.id}
+                                                open={archivingId === listing.id}
                                                 onOpenChange={(open) => {
-                                                    if (!isDeleting) {
-                                                        setDeletingId(
-                                                            open
-                                                                ? listing.id
-                                                                : null,
+                                                    if (!isArchiving) {
+                                                        setArchivingId(
+                                                            open ? listing.id : null,
                                                         );
                                                     }
-                                                }}
-                                            >
+                                                }}>
                                                 <AlertDialogTrigger asChild>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
-                                                        disabled={isDeleting}
-                                                        className="flex-1 text-destructive hover:cursor-pointer hover:bg-destructive/10 hover:text-destructive"
-                                                    >
-                                                        <Trash2 className="mr-1.5 size-3.5" />
-                                                        Delete
+                                                        disabled={isArchiving}
+                                                        className="flex-1 text-muted-foreground hover:cursor-pointer hover:bg-muted hover:text-foreground">
+                                                        <Archive className="mr-1.5 size-3.5" />
+                                                        Archive
                                                     </Button>
                                                 </AlertDialogTrigger>
                                                 <AlertDialogContent>
                                                     <AlertDialogHeader>
                                                         <AlertDialogTitle>
-                                                            Delete Listing
+                                                            Archive Listing
                                                         </AlertDialogTitle>
                                                         <AlertDialogDescription>
-                                                            Are you sure you
-                                                            want to delete{' '}
+                                                            Are you sure you want to archive{' '}
                                                             <span className="font-semibold text-foreground">
-                                                                "{listing.title}
-                                                                "
+                                                                "{listing.title}"
                                                             </span>
-                                                            ? This action is
-                                                            permanent and cannot
-                                                            be undone. All
-                                                            listing details and
-                                                            associated photos
-                                                            will be permanently
-                                                            deleted.
+                                                            ? This listing will be hidden from the public browse page, but all equipment details and photos will be safely
+                                                            preserved. You can restore it at any time from your Archived Listings.
                                                         </AlertDialogDescription>
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
                                                         <AlertDialogCancel
                                                             disabled={
-                                                                isDeleting
-                                                            }
-                                                        >
+                                                                isArchiving
+                                                            }>
                                                             Cancel
                                                         </AlertDialogCancel>
                                                         <AlertDialogAction
                                                             disabled={
-                                                                isDeleting
+                                                                isArchiving
                                                             }
-                                                            className="cursor-pointer bg-destructive text-white hover:bg-destructive/90"
+                                                            className="cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90"
                                                             onClick={(e) => {
                                                                 e.preventDefault();
-                                                                handleDelete(
+                                                                handleArchive(
                                                                     listing.id,
                                                                 );
-                                                            }}
-                                                        >
-                                                            {isDeleting &&
-                                                            deletingId ===
-                                                                listing.id ? (
+                                                            }}>
+                                                            {isArchiving && archivingId === listing.id ? (
                                                                 <>
                                                                     <Spinner className="mr-1.5" />
-                                                                    Deleting…
+                                                                    Archiving…
                                                                 </>
                                                             ) : (
-                                                                'Delete Permanently'
+                                                                'Archive Listing'
                                                             )}
                                                         </AlertDialogAction>
                                                     </AlertDialogFooter>

@@ -18,10 +18,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('my-listings/create', [ListingController::class, 'create'])->name('listings.create');
     Route::post('listings', [ListingController::class, 'store'])->name('listings.store');
     Route::get('my-listings', [ListingController::class, 'index'])->name('listings.index');
+    Route::get('my-listings/archived', [ListingController::class, 'archived'])->name('listings.archived');
     Route::get('my-listings/{listing}/edit', [ListingController::class, 'edit'])->whereNumber('listing')->name('listings.edit');
     Route::get('listings/{listing}/edit', [ListingController::class, 'edit'])->whereNumber('listing');
     Route::match(['put', 'patch'], 'listings/{listing}', [ListingController::class, 'update'])->whereNumber('listing')->name('listings.update');
-    Route::delete('listings/{listing}', [ListingController::class, 'destroy'])->whereNumber('listing')->name('listings.destroy');
+    Route::post('listings/{listing}/archive', [ListingController::class, 'archive'])->whereNumber('listing')->name('listings.archive');
+    Route::post('listings/{listing}/restore', [ListingController::class, 'restore'])->whereNumber('listing')->name('listings.restore');
 });
 Route::inertia('/account', 'account')->middleware('auth')->name('account');
 Route::get('/admin', function () {
