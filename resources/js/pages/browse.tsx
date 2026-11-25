@@ -221,10 +221,14 @@ export default function Browse({ listings }: Props) {
                                                 icon={<Camera />}
                                                 label="Browse Cameras"
                                             />
-                                            <SidebarItem
-                                                icon={<Heart />}
-                                                label="Favorites"
-                                            />
+                                            <Link
+                                                href="/favorites"
+                                                className="block">
+                                                <SidebarItem
+                                                    icon={<Heart />}
+                                                    label="Favorites"
+                                                />
+                                            </Link>
                                         </div>
 
                                         <div className="space-y-2">
@@ -288,8 +292,7 @@ export default function Browse({ listings }: Props) {
                                             <AlertDialogTrigger asChild>
                                                 <button
                                                     type="button"
-                                                    className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
-                                                >
+                                                    className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10">
                                                     <span className="size-5 [&>svg]:size-5">
                                                         <LogOut />
                                                     </span>
@@ -318,8 +321,7 @@ export default function Browse({ listings }: Props) {
                                                             router.post(
                                                                 '/logout',
                                                             )
-                                                        }
-                                                    >
+                                                        }>
                                                         Confirm Log Out
                                                     </AlertDialogAction>
                                                 </AlertDialogFooter>
@@ -332,8 +334,7 @@ export default function Browse({ listings }: Props) {
                             <Link href={login().url}>
                                 <Button
                                     className="hover:cursor-pointer"
-                                    size="sm"
-                                >
+                                    size="sm">
                                     Log In
                                 </Button>
                             </Link>
@@ -345,8 +346,7 @@ export default function Browse({ listings }: Props) {
             <main className="mx-auto max-w-6xl space-y-10 px-4 py-10">
                 <section className="space-y-3 text-center">
                     <p className="mx-auto max-w-xl text-lg text-muted-foreground">
-                        Browse cameras and equipment available for rent from
-                        photographers near you.
+                        Browse cameras and equipment available for rent from photographers near you.
                     </p>
                 </section>
 
@@ -375,8 +375,7 @@ export default function Browse({ listings }: Props) {
                     <h2 className="mb-4 text-lg font-semibold text-foreground">
                         Available Listings
                         <span className="ml-2 text-sm font-normal text-muted-foreground">
-                            ({filtered.length}{' '}
-                            {filtered.length === 1 ? 'result' : 'results'})
+                            ({filtered.length}{' '} {filtered.length === 1 ? 'result' : 'results'})
                         </span>
                     </h2>
 
@@ -386,8 +385,7 @@ export default function Browse({ listings }: Props) {
                                 <Link
                                     key={listing.id}
                                     href={`/listings/${listing.id}`}
-                                    className="block focus:outline-none"
-                                >
+                                    className="block focus:outline-none">
                                     <ListingCard listing={listing} />
                                 </Link>
                             ))}

@@ -3,7 +3,17 @@ import { useState } from 'react';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Plus, Camera, Pencil, Archive } from 'lucide-react';
 
 type ListingImage = {
@@ -36,13 +46,17 @@ export default function MyListings({ listings, archivedCount = 0 }: Props) {
     function handleArchive(id: number) {
         if (isArchiving) return;
         setIsArchiving(true);
-        router.post(`/listings/${id}/archive`, {}, {
-            preserveScroll: true,
-            onFinish: () => {
-                setIsArchiving(false);
-                setArchivingId(null);
+        router.post(
+            `/listings/${id}/archive`,
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => {
+                    setIsArchiving(false);
+                    setArchivingId(null);
+                },
             },
-        });
+        );
     }
 
     return (
@@ -67,12 +81,14 @@ export default function MyListings({ listings, archivedCount = 0 }: Props) {
                 <div className="mt-6 flex border-b border-border">
                     <Link
                         href="/my-listings"
-                        className="border-b-2 border-primary px-4 py-2.5 text-sm font-semibold text-primary">
+                        className="border-b-2 border-primary px-4 py-2.5 text-sm font-semibold text-primary"
+                    >
                         Active Listings ({listings.length})
                     </Link>
                     <Link
                         href="/my-listings/archived"
-                        className="border-b-2 border-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+                        className="border-b-2 border-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                    >
                         Archived {archivedCount > 0 ? `(${archivedCount})` : ''}
                     </Link>
                 </div>
@@ -163,20 +179,26 @@ export default function MyListings({ listings, archivedCount = 0 }: Props) {
                                             </Button>
 
                                             <AlertDialog
-                                                open={archivingId === listing.id}
+                                                open={
+                                                    archivingId === listing.id
+                                                }
                                                 onOpenChange={(open) => {
                                                     if (!isArchiving) {
                                                         setArchivingId(
-                                                            open ? listing.id : null,
+                                                            open
+                                                                ? listing.id
+                                                                : null,
                                                         );
                                                     }
-                                                }}>
+                                                }}
+                                            >
                                                 <AlertDialogTrigger asChild>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
                                                         disabled={isArchiving}
-                                                        className="flex-1 text-muted-foreground hover:cursor-pointer hover:bg-muted hover:text-foreground">
+                                                        className="flex-1 text-muted-foreground hover:cursor-pointer hover:bg-muted hover:text-foreground"
+                                                    >
                                                         <Archive className="mr-1.5 size-3.5" />
                                                         Archive
                                                     </Button>
@@ -187,19 +209,30 @@ export default function MyListings({ listings, archivedCount = 0 }: Props) {
                                                             Archive Listing
                                                         </AlertDialogTitle>
                                                         <AlertDialogDescription>
-                                                            Are you sure you want to archive{' '}
+                                                            Are you sure you
+                                                            want to archive{' '}
                                                             <span className="font-semibold text-foreground">
-                                                                "{listing.title}"
+                                                                "{listing.title}
+                                                                "
                                                             </span>
-                                                            ? This listing will be hidden from the public browse page, but all equipment details and photos will be safely
-                                                            preserved. You can restore it at any time from your Archived Listings.
+                                                            ? This listing will
+                                                            be hidden from the
+                                                            public browse page,
+                                                            but all equipment
+                                                            details and photos
+                                                            will be safely
+                                                            preserved. You can
+                                                            restore it at any
+                                                            time from your
+                                                            Archived Listings.
                                                         </AlertDialogDescription>
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
                                                         <AlertDialogCancel
                                                             disabled={
                                                                 isArchiving
-                                                            }>
+                                                            }
+                                                        >
                                                             Cancel
                                                         </AlertDialogCancel>
                                                         <AlertDialogAction
@@ -212,8 +245,11 @@ export default function MyListings({ listings, archivedCount = 0 }: Props) {
                                                                 handleArchive(
                                                                     listing.id,
                                                                 );
-                                                            }}>
-                                                            {isArchiving && archivingId === listing.id ? (
+                                                            }}
+                                                        >
+                                                            {isArchiving &&
+                                                                archivingId ===
+                                                                listing.id ? (
                                                                 <>
                                                                     <Spinner className="mr-1.5" />
                                                                     Archiving…

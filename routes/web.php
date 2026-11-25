@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\EmailVerificationCodeController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ListingController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,6 +25,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::match(['put', 'patch'], 'listings/{listing}', [ListingController::class, 'update'])->whereNumber('listing')->name('listings.update');
     Route::post('listings/{listing}/archive', [ListingController::class, 'archive'])->whereNumber('listing')->name('listings.archive');
     Route::post('listings/{listing}/restore', [ListingController::class, 'restore'])->whereNumber('listing')->name('listings.restore');
+    Route::get('favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+    Route::post('listings/{listing}/favorite', [FavoriteController::class, 'store'])->whereNumber('listing')->name('favorites.store');
+    Route::delete('listings/{listing}/favorite', [FavoriteController::class, 'destroy'])->whereNumber('listing')->name('favorites.destroy');
 });
 Route::inertia('/account', 'account')->middleware('auth')->name('account');
 Route::get('/admin', function () {
