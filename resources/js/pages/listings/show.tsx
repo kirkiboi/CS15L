@@ -1,5 +1,5 @@
-import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -9,6 +9,7 @@ import {
     Tag,
     ShieldCheck,
     MapPin,
+    Heart,
 } from 'lucide-react';
 
 type ListingImage = {
@@ -41,10 +42,46 @@ type Listing = {
 
 type Props = {
     listing: Listing;
+    isFavorited?: boolean;
+    isOwner?: boolean;
 };
 
-export default function ListingShow({ listing }: Props) {
+export default function ListingShow({
+    listing,
+    isFavorited = false,
+    isOwner = false,
+}: Props) {
+    const { auth } = usePage<{ auth: { user: { id: number; name: string } | null }; }>().props;
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+    const [favorited, setFavorited] = useState(isFavorited);
+    const [isToggling, setIsToggling] = useState(false);
+
+    useEffect(() => {
+        setFavorited(isFavorited);
+    }, [isFavorited]);
+
+    function handleToggleFavorite() {
+        if (!auth.user || isOwner || isToggling) return;
+
+        setIsToggling(true);
+        if (favorited) {
+            router.delete(`/listings/${listing.id}/favorite`, {
+                preserveScroll: true,
+                onSuccess: () => setFavorited(false),
+                onFinish: () => setIsToggling(false),
+            });
+        } else {
+            router.post(
+                `/listings/${listing.id}/favorite`,
+                {},
+                {
+                    preserveScroll: true,
+                    onSuccess: () => setFavorited(true),
+                    onFinish: () => setIsToggling(false),
+                },
+            );
+        }
+    }
     const formattedPrice = Number(listing.price_per_day).toLocaleString(
         'en-PH',
     );
@@ -134,28 +171,51 @@ export default function ListingShow({ listing }: Props) {
 
                     <div className="space-y-6 lg:col-span-5">
                         <div className="space-y-3 rounded-xl border border-border bg-card p-6">
-                            <div className="flex flex-wrap items-center gap-2">
-                                <Badge
-                                    variant="outline"
-                                    className="gap-1 font-medium"
-                                >
-                                    <Tag className="size-3" />
-                                    {listing.category}
-                                </Badge>
-                                <Badge
-                                    variant={
-                                        isAvailable ? 'default' : 'secondary'
-                                    }
-                                    className={
-                                        isAvailable
-                                            ? 'bg-emerald-600 text-white hover:bg-emerald-600'
-                                            : ''
-                                    }
-                                >
-                                    {isAvailable
-                                        ? 'Available for Rent'
-                                        : 'Unavailable'}
-                                </Badge>
+                            <div className="flex flex-wrap items-center justify-between gap-3">
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <Badge
+                                        variant="outline"
+                                        className="gap-1 font-medium">
+                                        <Tag className="size-3" />
+                                        {listing.category}
+                                    </Badge>
+                                    <Badge
+                                        variant={isAvailable ? 'default' : 'secondary'}
+                                        className={isAvailable ? 'bg-emerald-600 text-white hover:bg-emerald-600' : ''}>
+                                        {isAvailable ? 'Available for Rent' : 'Unavailable'}
+                                    </Badge>
+                                </div>
+
+                                {isOwner ? (
+                                    <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                                        Your Listing
+                                    </span>
+                                ) : !auth.user ? (
+                                    <Button
+                                        asChild
+                                        variant="outline"
+                                        size="sm"
+                                        className="gap-1.5 hover:cursor-pointer">
+                                        <Link href="/login">
+                                            <Heart className="size-4" />
+                                            <span>Save to Favorites</span>
+                                        </Link>
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        disabled={isToggling}
+                                        onClick={handleToggleFavorite}
+                                        className={`gap-1.5 hover:cursor-pointer ${favorited ? 'border-red-200 bg-red-50/60 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-400' : 'text-foreground hover:text-red-600'}`}>
+                                        <Heart
+                                            className={`size-4 ${favorited ? 'fill-red-500 text-red-500' : ''}`}
+                                        />
+                                        <span>
+                                            {favorited ? 'Favorite' : 'Save to Favorites'}
+                                        </span>
+                                    </Button>
+                                )}
                             </div>
 
                             <div>

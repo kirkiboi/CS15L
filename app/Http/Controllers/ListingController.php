@@ -67,7 +67,7 @@ class ListingController extends Controller
         ]);
     }
 
-    public function show(Listing $listing): Response
+    public function show(Request $request, Listing $listing): Response
     {
         abort_if($listing->archived_at !== null, 404);
         $listing->load([
@@ -75,8 +75,19 @@ class ListingController extends Controller
             'user:id,name',
         ]);
 
+        $user = $request->user();
+        $isFavorited = false;
+        $isOwner = false;
+
+        if ($user) {
+            $isOwner = $listing->user_id === $user->id;
+            $isFavorited = $user->favorites()->where('listing_id', $listing->id)->exists();
+        }
+
         return Inertia::render('listings/show', [
             'listing' => $listing,
+            'isFavorited' => $isFavorited,
+            'isOwner' => $isOwner,
         ]);
     }
 

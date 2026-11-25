@@ -15,6 +15,8 @@ use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use App\Notifications\EmailVerificationCode;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property int $id
@@ -64,5 +66,15 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         ])->save();
 
         $this->notify(new EmailVerificationCode($code));
+    }
+
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    public function favoriteListings(): BelongsToMany
+    {
+        return $this->belongsToMany(Listing::class, 'favorites')->withTimestamps();
     }
 }
