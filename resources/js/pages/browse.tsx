@@ -13,6 +13,7 @@ import {
     CalendarDays,
     MessageCircle,
     Package,
+    Archive,
     ClipboardList,
     UserRound,
     Settings,
@@ -44,6 +45,7 @@ type Listing = {
     pickup_location: string;
     price_per_day: string | number;
     status: 'available' | 'unavailable';
+    archived_at?: string | null;
     images: ListingImage[];
 };
 
@@ -138,6 +140,10 @@ export default function Browse({ listings }: Props) {
     const [search, setSearch] = useState('');
     const [location, setLocation] = useState('');
     const filtered = listings.filter((listing) => {
+        if (listing.archived_at) {
+            return false;
+        }
+
         const searchableText =
             `${listing.title} ${listing.brand} ${listing.model} ${listing.category}`.toLowerCase();
         const matchesKeyword =
@@ -246,6 +252,14 @@ export default function Browse({ listings }: Props) {
                                                 <SidebarItem
                                                     icon={<Package />}
                                                     label="My Listings"
+                                                />
+                                            </Link>
+                                            <Link
+                                                href="/my-listings/archived"
+                                                className="block">
+                                                <SidebarItem
+                                                    icon={<Archive />}
+                                                    label="Archived Listings"
                                                 />
                                             </Link>
                                             <SidebarItem
