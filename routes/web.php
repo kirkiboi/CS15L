@@ -32,7 +32,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('messages', [ConversationController::class, 'index'])->name('messages.index');
     Route::post('listings/{listing}/messages', [ConversationController::class, 'start'])->whereNumber('listing')->name('listings.messages.start');
     Route::get('messages/{conversation}', [ConversationController::class, 'show'])->whereNumber('conversation')->name('messages.show');
-    Route::post('messages/{conversation}', [ConversationController::class, 'storeMessage'])->whereNumber('conversation')->name('messages.store');
+    Route::post('messages/{conversation}', [ConversationController::class, 'storeMessage'])->whereNumber('conversation')->middleware('throttle:30,1')->name('messages.store');
+
 });
 Route::inertia('/account', 'account')->middleware('auth')->name('account');
 Route::get('/admin', function () {
