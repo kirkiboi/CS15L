@@ -2,6 +2,7 @@ import { Head, Link, usePage, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Spinner } from '@/components/ui/spinner';
 import {
     ArrowLeft,
     Camera,
@@ -10,6 +11,7 @@ import {
     ShieldCheck,
     MapPin,
     Heart,
+    MessageCircle,
 } from 'lucide-react';
 
 type ListingImage = {
@@ -51,14 +53,30 @@ export default function ListingShow({
     isFavorited = false,
     isOwner = false,
 }: Props) {
-    const { auth } = usePage<{ auth: { user: { id: number; name: string } | null }; }>().props;
+    const { auth } = usePage<{
+        auth: { user: { id: number; name: string } | null };
+    }>().props;
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
     const [favorited, setFavorited] = useState(isFavorited);
     const [isToggling, setIsToggling] = useState(false);
+    const [isStartingConversation, setIsStartingConversation] = useState(false);
 
     useEffect(() => {
         setFavorited(isFavorited);
     }, [isFavorited]);
+
+    function handleStartConversation() {
+        if (!auth.user || isOwner || isStartingConversation) return;
+
+        setIsStartingConversation(true);
+        router.post(
+            `/listings/${listing.id}/messages`,
+            {},
+            {
+                onFinish: () => setIsStartingConversation(false),
+            },
+        );
+    }
 
     function handleToggleFavorite() {
         if (!auth.user || isOwner || isToggling) return;
@@ -175,14 +193,26 @@ export default function ListingShow({
                                 <div className="flex flex-wrap items-center gap-2">
                                     <Badge
                                         variant="outline"
-                                        className="gap-1 font-medium">
+                                        className="gap-1 font-medium"
+                                    >
                                         <Tag className="size-3" />
                                         {listing.category}
                                     </Badge>
                                     <Badge
-                                        variant={isAvailable ? 'default' : 'secondary'}
-                                        className={isAvailable ? 'bg-emerald-600 text-white hover:bg-emerald-600' : ''}>
-                                        {isAvailable ? 'Available for Rent' : 'Unavailable'}
+                                        variant={
+                                            isAvailable
+                                                ? 'default'
+                                                : 'secondary'
+                                        }
+                                        className={
+                                            isAvailable
+                                                ? 'bg-emerald-600 text-white hover:bg-emerald-600'
+                                                : ''
+                                        }
+                                    >
+                                        {isAvailable
+                                            ? 'Available for Rent'
+                                            : 'Unavailable'}
                                     </Badge>
                                 </div>
 
@@ -195,7 +225,8 @@ export default function ListingShow({
                                         asChild
                                         variant="outline"
                                         size="sm"
-                                        className="gap-1.5 hover:cursor-pointer">
+                                        className="gap-1.5 hover:cursor-pointer"
+                                    >
                                         <Link href="/login">
                                             <Heart className="size-4" />
                                             <span>Save to Favorites</span>
@@ -207,12 +238,15 @@ export default function ListingShow({
                                         size="sm"
                                         disabled={isToggling}
                                         onClick={handleToggleFavorite}
-                                        className={`gap-1.5 hover:cursor-pointer ${favorited ? 'border-red-200 bg-red-50/60 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-400' : 'text-foreground hover:text-red-600'}`}>
+                                        className={`gap-1.5 hover:cursor-pointer ${favorited ? 'border-red-200 bg-red-50/60 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-400' : 'text-foreground hover:text-red-600'}`}
+                                    >
                                         <Heart
                                             className={`size-4 ${favorited ? 'fill-red-500 text-red-500' : ''}`}
                                         />
                                         <span>
-                                            {favorited ? 'Favorite' : 'Save to Favorites'}
+                                            {favorited
+                                                ? 'Favorite'
+                                                : 'Save to Favorites'}
                                         </span>
                                     </Button>
                                 )}
@@ -324,6 +358,41 @@ export default function ListingShow({
                                     </p>
                                 </div>
                             </div>
+
+                            {!isOwner && (
+                                <div className="mt-5 border-t border-border pt-4">
+                                    {!auth.user ? (
+                                        <Button
+                                            asChild
+                                            className="w-full gap-2 hover:cursor-pointer">
+                                            <Link href="/login">
+                                                <MessageCircle className="size-4" />
+                                                <span>Message Owner</span>
+                                            </Link>
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            type="button"
+                                            disabled={isStartingConversation}
+                                            onClick={handleStartConversation}
+                                            className="w-full gap-2 hover:cursor-pointer">
+                                            {isStartingConversation ? (
+                                                <>
+                                                    <Spinner className="size-4" />
+                                                    <span>
+                                                        Opening Conversation…
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <MessageCircle className="size-4" />
+                                                    <span>Message Owner</span>
+                                                </>
+                                            )}
+                                        </Button>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

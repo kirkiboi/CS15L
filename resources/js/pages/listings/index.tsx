@@ -248,7 +248,7 @@ export default function MyListings({ listings, archivedCount = 0 }: Props) {
                                                             }}
                                                         >
                                                             {isArchiving &&
-                                                                archivingId ===
+                                                            archivingId ===
                                                                 listing.id ? (
                                                                 <>
                                                                     <Spinner className="mr-1.5" />

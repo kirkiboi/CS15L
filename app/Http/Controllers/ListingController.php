@@ -94,7 +94,7 @@ class ListingController extends Controller
     public function edit(Request $request, Listing $listing): Response
     {
         abort_unless($listing->user_id === $request->user()->id, 403);
-
+        abort_if($listing->archived_at !== null, 403, 'Archived listings are soft-deleted listings and cannot be edited. Please restore the listing first.');
         $listing->load('images');
 
         return Inertia::render('listings/edit', [
@@ -104,6 +104,7 @@ class ListingController extends Controller
     
 public function update(Request $request, Listing $listing): RedirectResponse{
     abort_unless($listing->user_id === $request->user()->id, 403);
+    abort_if($listing->archived_at !== null, 403, 'Archived listings are soft-deleted listings and cannot be edited. Please restore the listing first.');
 
     $validated = $request->validate([
         'title'               => ['required', 'string', 'max:255'],

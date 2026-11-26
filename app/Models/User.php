@@ -77,4 +77,19 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     {
         return $this->belongsToMany(Listing::class, 'favorites')->withTimestamps();
     }
+
+    public function ownedConversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class, 'owner_id');
+    }
+
+    public function renterConversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class, 'renter_id');
+    }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
 }
