@@ -32,6 +32,10 @@ class FavoriteController extends Controller
         if ($listing->user_id === $request->user()->id) {
             abort(403, 'You cannot favorite your own listing.');
         }
+        abort_if(
+            $listing->archived_at !== null,
+            404, 'Unfortunately, this listing cannot be added to favorites as this has been archived by the owner. We recommend reaching out to them to see if they are still interested in having the item rented.'
+        );
 
         $request->user()->favorites()->firstOrCreate([
             'listing_id' => $listing->id,

@@ -124,7 +124,7 @@ export default function FavoritesPage({ favorites }: Props) {
                                             <div className="relative overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md">
                                                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
                                                     {listing.images &&
-                                                    listing.images.length >
+                                                        listing.images.length >
                                                         0 ? (
                                                         <img
                                                             src={`/storage/${listing.images[0].image_path}`}
@@ -197,7 +197,7 @@ export default function FavoritesPage({ favorites }: Props) {
                                                         <div className="flex items-center gap-1.5 pt-1 text-xs text-muted-foreground">
                                                             <AlertCircle className="size-3.5 shrink-0 text-muted-foreground" />
                                                             <span>
-                                                                This item may
+                                                                This item has been archived by the owner and may
                                                                 not be up for
                                                                 rent anymore. We
                                                                 recommend
@@ -226,7 +226,7 @@ export default function FavoritesPage({ favorites }: Props) {
                                                             className="w-full text-red-600 hover:cursor-pointer hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950/20"
                                                         >
                                                             {removingId ===
-                                                            listing.id ? (
+                                                                listing.id ? (
                                                                 <>
                                                                     <Spinner className="mr-1.5 size-3.5" />
                                                                     Removing…
