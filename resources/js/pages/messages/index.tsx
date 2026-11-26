@@ -178,7 +178,7 @@ export default function MessagesIndex({ conversations }: Props) {
                                                             className="gap-1 text-[11px] text-muted-foreground"
                                                         >
                                                             <CheckCheck className="size-3 text-emerald-600" />
-                                                            Two-way
+                                                            Rent Request Enabled
                                                         </Badge>
                                                     )}
                                                 </div>
@@ -188,15 +188,6 @@ export default function MessagesIndex({ conversations }: Props) {
                                                         <span className="truncate">
                                                             {convo.listing.brand}{' '}{convo.listing.model}
                                                         </span>
-                                                        {convo.listing
-                                                            .is_archived && (
-                                                                <Badge
-                                                                    variant="outline"
-                                                                    className="text-[10px]"
-                                                                >
-                                                                    Archived
-                                                                </Badge>
-                                                            )}
                                                     </div>
                                                 )}
 
@@ -250,8 +241,6 @@ export default function MessagesIndex({ conversations }: Props) {
                                                     )}
                                                 </div>
                                             )}
-
-                                            <ChevronRight className="hidden size-4 text-muted-foreground sm:block" />
                                         </div>
                                     </Link>
                                 );

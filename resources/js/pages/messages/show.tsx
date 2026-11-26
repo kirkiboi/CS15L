@@ -166,14 +166,14 @@ export default function ConversationShow({ conversation }: Props) {
                                                 className="gap-1 text-[11px] text-muted-foreground"
                                             >
                                                 <CheckCheck className="size-3 text-emerald-600" />
-                                                Rent Enabled
+                                                Rent Request Enabled
                                             </Badge>
                                         ) : (
                                             <Badge
                                                 variant="outline"
                                                 className="text-[11px] text-muted-foreground"
                                             >
-                                                Awaiting reply
+                                                Rent Request Disabled
                                             </Badge>
                                         )}
                                     </div>
@@ -210,12 +210,12 @@ export default function ConversationShow({ conversation }: Props) {
                                                 / day
                                             </span>
                                         </p>
-                                        {listing.is_archived ? (
+                                        {listing.is_archived || listing.status === 'unavailable' ? (
                                             <Badge
                                                 variant="outline"
                                                 className="mt-0.5 text-[10px]"
                                             >
-                                                Archived
+                                                Unavailable for rent
                                             </Badge>
                                         ) : (
                                             <Link
@@ -238,10 +238,6 @@ export default function ConversationShow({ conversation }: Props) {
                                 <MessageCircle className="mb-3 size-10 opacity-30" />
                                 <p className="text-sm font-medium">
                                     No messages in this conversation yet.
-                                </p>
-                                <p className="mt-1 text-xs text-muted-foreground/80">
-                                    Send a message below to start coordinating
-                                    with {other_user.name}.
                                 </p>
                             </div>
                         ) : (
@@ -300,7 +296,7 @@ export default function ConversationShow({ conversation }: Props) {
                                     value={data.body}
                                     onChange={(e) => setData('body', e.target.value)}
                                     onKeyDown={handleKeyDown}
-                                    placeholder={`Write a message to ${other_user.name}...`}
+                                    placeholder={`Write a message to ${other_user.name}`}
                                     rows={2}
                                     disabled={processing}
                                     className="flex w-full resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
