@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\EmailVerificationCodeController;
+use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ListingController;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('favorites', [FavoriteController::class, 'index'])->name('favorites.index');
     Route::post('listings/{listing}/favorite', [FavoriteController::class, 'store'])->whereNumber('listing')->name('favorites.store');
     Route::delete('listings/{listing}/favorite', [FavoriteController::class, 'destroy'])->whereNumber('listing')->name('favorites.destroy');
+    Route::get('messages', [ConversationController::class, 'index'])->name('messages.index');
+    Route::post('listings/{listing}/messages', [ConversationController::class, 'start'])->whereNumber('listing')->name('listings.messages.start');
+    Route::get('messages/{conversation}', [ConversationController::class, 'show'])->whereNumber('conversation')->name('messages.show');
+    Route::post('messages/{conversation}', [ConversationController::class, 'storeMessage'])->whereNumber('conversation')->name('messages.store');
 });
 Route::inertia('/account', 'account')->middleware('auth')->name('account');
 Route::get('/admin', function () {

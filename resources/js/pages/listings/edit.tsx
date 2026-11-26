@@ -99,7 +99,9 @@ export default function EditListing({ listing }: Props) {
     });
 
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [previews, setPreviews] = useState<{ name: string; url: string }[]>([],);
+    const [previews, setPreviews] = useState<{ name: string; url: string }[]>(
+        [],
+    );
     const previewsRef = useRef<{ name: string; url: string }[]>([]);
 
     useEffect(() => {

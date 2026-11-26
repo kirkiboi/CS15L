@@ -59,7 +59,8 @@ export default function FavoritesPage({ favorites }: Props) {
                 <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
                     <Link
                         href="/"
-                        className="text-xl font-bold tracking-tight text-foreground">
+                        className="text-xl font-bold tracking-tight text-foreground"
+                    >
                         LetMeSee
                     </Link>
                 </div>
@@ -71,7 +72,8 @@ export default function FavoritesPage({ favorites }: Props) {
                         asChild
                         variant="outline"
                         size="sm"
-                        className="gap-2">
+                        className="gap-2"
+                    >
                         <Link href="/">
                             <ArrowLeft className="size-4" />
                             Back to Browse
@@ -99,7 +101,9 @@ export default function FavoritesPage({ favorites }: Props) {
                                 </h3>
 
                                 <p className="mt-2 max-w-md text-sm text-muted-foreground">
-                                    Browse cameras and equipment, and click the favorite button on any listing to save it here.
+                                    Browse cameras and equipment, and click the
+                                    favorite button on any listing to save it
+                                    here.
                                 </p>
 
                                 <Button asChild className="mt-6">
@@ -110,13 +114,17 @@ export default function FavoritesPage({ favorites }: Props) {
                             <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                                 {favorites.map(
                                     ({ id: favoriteId, listing }) => {
-                                        const isArchived = Boolean(listing.archived_at,);
-                                        const isUnavailable = isArchived || listing.status === 'unavailable';
+                                        const isArchived = Boolean(
+                                            listing.archived_at,
+                                        );
+                                        const isUnavailable =
+                                            isArchived ||
+                                            listing.status === 'unavailable';
                                         const CardContent = (
                                             <div className="relative overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md">
                                                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
                                                     {listing.images &&
-                                                        listing.images.length >
+                                                    listing.images.length >
                                                         0 ? (
                                                         <img
                                                             src={`/storage/${listing.images[0].image_path}`}
@@ -133,12 +141,15 @@ export default function FavoritesPage({ favorites }: Props) {
                                                         {isUnavailable ? (
                                                             <Badge
                                                                 variant="secondary"
-                                                                className="bg-background/95 font-medium text-amber-700 shadow-xs backdrop-blur dark:text-amber-400">
-                                                                Unavailable For Rent
+                                                                className="bg-background/95 font-medium text-amber-700 shadow-xs backdrop-blur dark:text-amber-400"
+                                                            >
+                                                                Unavailable For
+                                                                Rent
                                                             </Badge>
                                                         ) : (
                                                             <Badge className="bg-emerald-600 font-medium text-white shadow-xs hover:bg-emerald-600">
-                                                                Available for Rent
+                                                                Available for
+                                                                Rent
                                                             </Badge>
                                                         )}
                                                     </div>
@@ -154,22 +165,31 @@ export default function FavoritesPage({ favorites }: Props) {
                                                     </h3>
 
                                                     <p className="text-sm text-muted-foreground">
-                                                        {listing.brand}{' '} {listing.model}
+                                                        {listing.brand}{' '}
+                                                        {listing.model}
                                                     </p>
 
                                                     {listing.pickup_location && (
                                                         <p className="flex items-center gap-1 text-xs text-muted-foreground">
                                                             <MapPin className="size-3.5 shrink-0" />
                                                             <span className="truncate">
-                                                                {listing.pickup_location}
+                                                                {
+                                                                    listing.pickup_location
+                                                                }
                                                             </span>
                                                         </p>
                                                     )}
 
                                                     <p className="pt-1 text-base font-bold text-foreground">
-                                                        ₱ {Number(listing.price_per_day,).toLocaleString('en-PH',)}
+                                                        ₱{' '}
+                                                        {Number(
+                                                            listing.price_per_day,
+                                                        ).toLocaleString(
+                                                            'en-PH',
+                                                        )}
                                                         <span className="text-sm font-normal text-muted-foreground">
-                                                            {' '} / day
+                                                            {' '}
+                                                            / day
                                                         </span>
                                                     </p>
 
@@ -177,7 +197,12 @@ export default function FavoritesPage({ favorites }: Props) {
                                                         <div className="flex items-center gap-1.5 pt-1 text-xs text-muted-foreground">
                                                             <AlertCircle className="size-3.5 shrink-0 text-muted-foreground" />
                                                             <span>
-                                                                This item may not be up for rent anymore. We recommend reaching out to the owner.
+                                                                This item may
+                                                                not be up for
+                                                                rent anymore. We
+                                                                recommend
+                                                                reaching out to
+                                                                the owner.
                                                             </span>
                                                         </div>
                                                     )}
@@ -187,7 +212,10 @@ export default function FavoritesPage({ favorites }: Props) {
                                                             type="button"
                                                             variant="outline"
                                                             size="sm"
-                                                            disabled={removingId === listing.id}
+                                                            disabled={
+                                                                removingId ===
+                                                                listing.id
+                                                            }
                                                             onClick={(e) => {
                                                                 e.preventDefault();
                                                                 e.stopPropagation();
@@ -195,9 +223,10 @@ export default function FavoritesPage({ favorites }: Props) {
                                                                     listing.id,
                                                                 );
                                                             }}
-                                                            className="w-full text-red-600 hover:cursor-pointer hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950/20">
+                                                            className="w-full text-red-600 hover:cursor-pointer hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950/20"
+                                                        >
                                                             {removingId ===
-                                                                listing.id ? (
+                                                            listing.id ? (
                                                                 <>
                                                                     <Spinner className="mr-1.5 size-3.5" />
                                                                     Removing…
@@ -205,7 +234,8 @@ export default function FavoritesPage({ favorites }: Props) {
                                                             ) : (
                                                                 <>
                                                                     <Heart className="mr-1.5 size-3.5 fill-red-500 text-red-500" />
-                                                                    Remove from Favorites
+                                                                    Remove from
+                                                                    Favorites
                                                                 </>
                                                             )}
                                                         </Button>
@@ -221,7 +251,8 @@ export default function FavoritesPage({ favorites }: Props) {
                                                 ) : (
                                                     <Link
                                                         href={`/listings/${listing.id}`}
-                                                        className="block focus:outline-none">
+                                                        className="block focus:outline-none"
+                                                    >
                                                         {CardContent}
                                                     </Link>
                                                 )}
