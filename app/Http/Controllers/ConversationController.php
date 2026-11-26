@@ -81,7 +81,7 @@ class ConversationController extends Controller
 
         abort_if($listing->user_id === $user->id, 403, 'You cannot message yourself.');
         abort_if($listing->archived_at !== null, 404, 'This listing is archived and unavailable.');
-
+        abort_if($listing->status !== 'available', 403, 'This listing is currently unavailable for rent and therefore unavailabe for new conversations.');
         $conversation = Conversation::firstOrCreate(
             [
                 'listing_id' => $listing->id,
