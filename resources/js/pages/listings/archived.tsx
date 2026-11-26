@@ -68,15 +68,11 @@ export default function ArchivedListings({ listings, activeCount = 0 }: Props) {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <Heading
                         title="Archived Listings"
-                        description="View and restore camera equipment listings you have archived."
+                        description="Archived listings are withdrawn from the marketplace and cannot be
+                        edited or receive new favorites or conversations. Restore a listing
+                        before making changes or offering it for rent again. Existing favorites
+                        and conversations are preserved."
                     />
-
-                    <Button asChild>
-                        <Link href="/my-listings/create">
-                            <Plus className="mr-2 size-4" />
-                            Add Listing
-                        </Link>
-                    </Button>
                 </div>
 
                 <div className="mt-6 flex border-b border-border">
@@ -252,7 +248,7 @@ export default function ArchivedListings({ listings, activeCount = 0 }: Props) {
                                                             }}
                                                         >
                                                             {isRestoring &&
-                                                            restoringId ===
+                                                                restoringId ===
                                                                 listing.id ? (
                                                                 <>
                                                                     <Spinner className="mr-1.5" />
